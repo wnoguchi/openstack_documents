@@ -1,0 +1,71 @@
+diff --git a/dhcp_agent.ini b/dhcp_agent.ini
+index 01872e3..5afb50c 100644
+--- a/dhcp_agent.ini
++++ b/dhcp_agent.ini
+@@ -11,7 +11,7 @@
+ # matches you plugin.
+ 
+ # OVS based plugins(OVS, Ryu, NEC, NVP, BigSwitch/Floodlight)
+-interface_driver = quantum.agent.linux.interface.OVSInterfaceDriver
++interface_driver = quantum.agent.linux.interface.BridgeInterfaceDriver
+ # OVS based plugins(Ryu, NEC, NVP, BigSwitch/Floodlight) that use OVS
+ # as OpenFlow switch and check port status
+ #ovs_use_veth = True
+@@ -21,6 +21,10 @@ interface_driver = quantum.agent.linux.interface.OVSInterfaceDriver
+ # The agent can use other DHCP drivers.  Dnsmasq is the simplest and requires
+ # no additional setup of the DHCP server.
+ dhcp_driver = quantum.agent.linux.dhcp.Dnsmasq
++auth_url = http://stack01:35357/v2.0/
++admin_username = admin
++admin_password = secrete
++admin_tenant_name = demo
+ 
+ # Allow overlapping IP (Must have kernel build with CONFIG_NET_NS=y and
+ # iproute2 package that supports namespaces).
+diff --git a/l3_agent.ini b/l3_agent.ini
+index 133576c..1b64c0a 100644
+--- a/l3_agent.ini
++++ b/l3_agent.ini
+@@ -6,7 +6,8 @@
+ # matches your plugin.
+ 
+ # OVS based plugins (OVS, Ryu, NEC) that supports L3 agent
+-interface_driver = quantum.agent.linux.interface.OVSInterfaceDriver
++interface_driver = quantum.agent.linux.interface.BridgeInterfaceDriver
++external_network_bridge = 
+ # OVS based plugins(Ryu, NEC) that use OVS
+ # as OpenFlow switch and check port status
+ #ovs_use_veth = True
+diff --git a/metadata_agent.ini b/metadata_agent.ini
+index 2a4e1ac..64d7a31 100644
+--- a/metadata_agent.ini
++++ b/metadata_agent.ini
+@@ -3,11 +3,11 @@
+ # debug = True
+ 
+ # The Quantum user information for accessing the Quantum API.
+-auth_url = http://localhost:35357/v2.0
++auth_url = http://stack01:35357/v2.0/
+ auth_region = RegionOne
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
++admin_tenant_name = demo
++admin_user = admin
++admin_password = secrete
+ 
+ # IP address used by Nova metadata server
+ # nova_metadata_ip = 127.0.0.1
+diff --git a/quantum.conf b/quantum.conf
+index fe6bc66..0ef447b 100644
+--- a/quantum.conf
++++ b/quantum.conf
+@@ -195,7 +195,7 @@ default_notification_level = INFO
+ notification_topics = notifications
+ core_plugin = quantum.plugins.linuxbridge.lb_quantum_plugin.LinuxBridgePluginV2
+ rpc_backend = quantum.openstack.common.rpc.impl_qpid
+-qpid_hostname = localhost
++qpid_hostname = stack01
+ 
+ # Default maximum number of items returned in a single response,
+ # value == infinite and value < 0 means no max limit, and value must

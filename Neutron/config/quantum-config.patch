@@ -1,0 +1,54 @@
+diff --git a/api-paste.ini b/api-paste.ini
+index b8e8ee1..2ee9f99 100644
+--- a/api-paste.ini
++++ b/api-paste.ini
+@@ -13,6 +13,12 @@ paste.filter_factory = quantum.auth:QuantumKeystoneContext.factory
+ 
+ [filter:authtoken]
+ paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
++auth_host = stack01
++auth_port = 35357
++auth_protocol = http
++admin_tenant_name = demo
++admin_user = admin
++admin_password = secrete
+ 
+ [filter:extensions]
+ paste.filter_factory = quantum.api.extensions:plugin_aware_extension_middleware_factory
+diff --git a/quantum.conf b/quantum.conf
+index 39db6e0..fe6bc66 100644
+--- a/quantum.conf
++++ b/quantum.conf
+@@ -90,7 +90,7 @@ auth_strategy = keystone
+ 
+ # RPC configuration options. Defined in rpc __init__
+ # The messaging module to use, defaults to kombu.
+-# rpc_backend = quantum.openstack.common.rpc.impl_kombu
++rpc_backend = quantum.openstack.common.rpc.impl_kombu
+ # Size of RPC thread pool
+ # rpc_thread_pool_size = 64,
+ # Size of RPC connection pool
+@@ -119,18 +119,18 @@ control_exchange = quantum
+ # SSL certification authority file (valid only if SSL enabled)'
+ # kombu_ssl_ca_certs =
+ # IP address of the RabbitMQ installation
+-# rabbit_host = localhost
++rabbit_host = stack01
+ # Password of the RabbitMQ server
+-# rabbit_password = guest
++rabbit_password = guest
+ # Port where RabbitMQ server is running/listening
+-# rabbit_port = 5672
++rabbit_port = 5672
+ # RabbitMQ single or HA cluster (host:port pairs i.e: host1:5672, host2:5672)
+ # rabbit_hosts is defaulted to '$rabbit_host:$rabbit_port'
+ # rabbit_hosts = localhost:5672
+ # User ID used for RabbitMQ connections
+-# rabbit_userid = guest
++rabbit_userid = guest
+ # Location of a virtual RabbitMQ installation.
+-# rabbit_virtual_host = /
++rabbit_virtual_host = /
+ # Maximum retries with trying to connect to RabbitMQ
+ # (the default of 0 implies an infinite retry count)
+ # rabbit_max_retries = 0

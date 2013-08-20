@@ -1,0 +1,118 @@
+diff --git a/glance-api.conf b/glance-api.conf
+index 56e9496..9ee2714 100644
+--- a/glance-api.conf
++++ b/glance-api.conf
+@@ -46,7 +46,8 @@ backlog = 4096
+ # SQLAlchemy connection string for the reference implementation
+ # registry server. Any valid SQLAlchemy connection string is fine.
+ # See: http://www.sqlalchemy.org/docs/05/reference/sqlalchemy/connections.html#sqlalchemy.create_engine
+-sql_connection = mysql://glance:glance@localhost/glance
++#sql_connection = mysql://glance:glance@stack01/glance
++sql_connection = mysql://glance:password@stack01/glance?charset=utf8
+ 
+ # Period in seconds after which SQLAlchemy should reestablish its connection
+ # to the database.
+@@ -163,7 +164,7 @@ notifier_strategy = noop
+ 
+ # Configuration options if sending notifications via rabbitmq (these are
+ # the defaults)
+-rabbit_host = localhost
++rabbit_host = stack01
+ rabbit_port = 5672
+ rabbit_use_ssl = false
+ rabbit_userid = guest
+@@ -177,7 +178,7 @@ rabbit_durable_queues = False
+ # the defaults)
+ qpid_notification_exchange = glance
+ qpid_notification_topic = notifications
+-qpid_host = localhost
++qpid_host = stack01
+ qpid_port = 5672
+ qpid_username =
+ qpid_password =
+@@ -207,8 +208,8 @@ swift_store_auth_version = 2
+ # Address where the Swift authentication service lives
+ # Valid schemes are 'http://' and 'https://'
+ # If no scheme specified,  default to 'https://'
+-# For swauth, use something like '127.0.0.1:8080/v1.0/'
+-swift_store_auth_address = 127.0.0.1:5000/v2.0/
++# For swauth, use something like 'stack01:8080/v1.0/'
++swift_store_auth_address = stack01:5000/v2.0/
+ 
+ # User to authenticate against the Swift authentication service
+ # If you use Swift authentication service, set it to 'account':'user'
+@@ -271,7 +272,7 @@ swift_enable_snet = False
+ # Address where the S3 authentication service lives
+ # Valid schemes are 'http://' and 'https://'
+ # If no scheme specified,  default to 'http://'
+-s3_store_host = 127.0.0.1:8080/v1.0/
++s3_store_host = stack01:8080/v1.0/
+ 
+ # User to authenticate against the S3 authentication service
+ s3_store_access_key = <20-char AWS access key>
+@@ -338,12 +339,15 @@ scrubber_datadir = /var/lib/glance/scrubber
+ image_cache_dir = /var/lib/glance/image-cache/
+ 
+ [keystone_authtoken]
+-auth_host = 127.0.0.1
++auth_host = stack01
+ auth_port = 35357
+ auth_protocol = http
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
++#admin_tenant_name = %SERVICE_TENANT_NAME%
++#admin_user = %SERVICE_USER%
++#admin_password = %SERVICE_PASSWORD%
++admin_tenant_name = service
++admin_user = glance
++admin_password = glance
+ 
+ [paste_deploy]
+ # Name of the paste configuration file that defines the available pipelines
+@@ -354,3 +358,5 @@ admin_password = %SERVICE_PASSWORD%
+ # [pipeline:glance-api-keystone], you would configure the flavor below
+ # as 'keystone'.
+ #flavor=
++flavor = keystone
++
+diff --git a/glance-registry.conf b/glance-registry.conf
+index 193a402..5d49d76 100644
+--- a/glance-registry.conf
++++ b/glance-registry.conf
+@@ -25,7 +25,8 @@ backlog = 4096
+ # SQLAlchemy connection string for the reference implementation
+ # registry server. Any valid SQLAlchemy connection string is fine.
+ # See: http://www.sqlalchemy.org/docs/05/reference/sqlalchemy/connections.html#sqlalchemy.create_engine
+-sql_connection = mysql://glance:glance@localhost/glance
++#sql_connection = mysql://glance:glance@stack01/glance
++sql_connection = mysql://glance:password@stack01/glance?charset=utf8
+ 
+ # Period in seconds after which SQLAlchemy should reestablish its connection
+ # to the database.
+@@ -72,12 +73,15 @@ limit_param_default = 25
+ #ca_file = /path/to/cafile
+ 
+ [keystone_authtoken]
+-auth_host = 127.0.0.1
++auth_host = stack01
+ auth_port = 35357
+ auth_protocol = http
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
++#admin_tenant_name = %SERVICE_TENANT_NAME%
++#admin_user = %SERVICE_USER%
++#admin_password = %SERVICE_PASSWORD%
++admin_tenant_name = service
++admin_user = glance
++admin_password = glance
+ 
+ [paste_deploy]
+ # Name of the paste configuration file that defines the available pipelines
+@@ -88,3 +92,5 @@ admin_password = %SERVICE_PASSWORD%
+ # [pipeline:glance-registry-keystone], you would configure the flavor below
+ # as 'keystone'.
+ #flavor=
++flavor = keystone
++

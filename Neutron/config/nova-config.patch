@@ -1,0 +1,22 @@
+diff --git a/nova.conf b/nova.conf
+index d8d759e..2ec79f4 100644
+--- a/nova.conf
++++ b/nova.conf
+@@ -77,12 +77,13 @@ keystone_ec2_url=http://stack01:5000/v2.0/ec2tokens
+ firewall_driver = nova.virt.firewall.NoopFirewallDriver
+ network_api_class = nova.network.quantumv2.api.API
+ quantum_admin_username = quantum
+-quantum_admin_password = servicepass
+-quantum_admin_auth_url = http://127.0.0.1:35357/v2.0/
++quantum_admin_password = password
++quantum_admin_auth_url = http://stack01:35357/v2.0/
+ quantum_auth_strategy = keystone
+-quantum_admin_tenant_name = service
+-quantum_url = http://localhost:9696/
++quantum_admin_tenant_name = demo
++quantum_url = http://stack01:9696/
+ security_group_api = quantum
++libvirt_vif_driver = nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
+ 
+ #memcache
+ #memcached_servers=stack01:11211

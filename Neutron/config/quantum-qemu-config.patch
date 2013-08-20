@@ -1,0 +1,46 @@
+diff --git a/qemu.conf b/qemu.conf
+index dd853c8..147bdf6 100644
+--- a/qemu.conf
++++ b/qemu.conf
+@@ -195,11 +195,11 @@
+ #       user = "+0"     # Super user (uid=0)
+ #       user = "100"    # A user named "100" or a user with uid=100
+ #
+-#user = "root"
++user = "root"
+ 
+ # The group for QEMU processes run by the system instance. It can be
+ # specified in a similar way to user.
+-#group = "root"
++group = "root"
+ 
+ # Whether libvirt should dynamically change file ownership
+ # to match the configured user/group above. Defaults to 1.
+@@ -237,12 +237,12 @@
+ # This will only need setting if newer QEMU suddenly
+ # wants some device we don't already know about.
+ #
+-#cgroup_device_acl = [
+-#    "/dev/null", "/dev/full", "/dev/zero",
+-#    "/dev/random", "/dev/urandom",
+-#    "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
+-#    "/dev/rtc","/dev/hpet"
+-#]
++cgroup_device_acl = [
++    "/dev/null", "/dev/full", "/dev/zero",
++    "/dev/random", "/dev/urandom",
++    "/dev/ptmx", "/dev/kvm", "/dev/kqemu",
++    "/dev/rtc","/dev/hpet", "/dev/net/tun"
++]
+ 
+ 
+ # The default format for Qemu/KVM guest save images is raw; that is, the
+@@ -308,7 +308,7 @@
+ # Warning: Disabling this option means that a compromised guest can
+ # exploit the privileges and possibly do damage to the host.
+ #
+-#clear_emulator_capabilities = 1
++clear_emulator_capabilities = 0
+ 
+ 
+ # If enabled, libvirt will have QEMU set its process name to

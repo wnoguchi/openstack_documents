@@ -1,0 +1,29 @@
+diff --git a/plugins/linuxbridge/linuxbridge_conf.ini b/plugins/linuxbridge/linuxbridge_conf.ini
+index e59bc66..1fe76db 100644
+--- a/plugins/linuxbridge/linuxbridge_conf.ini
++++ b/plugins/linuxbridge/linuxbridge_conf.ini
+@@ -8,6 +8,7 @@
+ #
+ # Default: tenant_network_type = local
+ # Example: tenant_network_type = vlan
++tenant_network_type = vlan
+ 
+ # (ListOpt) Comma-separated list of
+ # <physical_network>[:<vlan_min>:<vlan_max>] tuples enumerating ranges
+@@ -18,7 +19,7 @@
+ # 'vlan'. If empty, only local networks may be created.
+ #
+ # Default: network_vlan_ranges =
+-# Example: network_vlan_ranges = physnet1:1000:2999
++# Example: network_vlan_ranges = physnet1:2:2999
+ 
+ [DATABASE]
+ # This line MUST be changed to actually run the plugin.
+@@ -54,6 +55,7 @@ physical_interface = eth0
+ #
+ # Default: physical_interface_mappings =
+ # Example: physical_interface_mappings = physnet1:eth1
++physical_interface_mappings = physnet1:eth1
+ 
+ [AGENT]
+ # Agent's polling interval in seconds

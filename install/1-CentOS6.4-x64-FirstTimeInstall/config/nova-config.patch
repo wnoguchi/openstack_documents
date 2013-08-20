@@ -1,0 +1,139 @@
+diff --git a/api-paste.ini b/api-paste.ini
+index 7d3c81e..7be8068 100644
+--- a/api-paste.ini
++++ b/api-paste.ini
+@@ -98,9 +98,12 @@ paste.filter_factory = nova.api.auth:NovaKeystoneContext.factory
+ 
+ [filter:authtoken]
+ paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+-# signing_dir is configurable, but the default behavior of the authtoken
+-# middleware should be sufficient.  It will create a temporary directory
+-# in the home directory for the user the nova process is running as.
+-#signing_dir = /var/lib/nova/keystone-signing
+-# Workaround for https://bugs.launchpad.net/nova/+bug/1154809
++auth_host = stack01
++auth_port = 35357
++auth_protocol = http
++admin_tenant_name = service
++admin_user = nova
++admin_password = nova
++signing_dirname = /tmp/keystone-signing-nova
+ auth_version = v2.0
++
+diff --git a/nova-compute.conf b/nova-compute.conf
+new file mode 100644
+index 0000000..4f6fe9e
+--- /dev/null
++++ b/nova-compute.conf
+@@ -0,0 +1,2 @@
++[default]
++libvirt_type=kvm
+diff --git a/nova.conf b/nova.conf
+index 5161339..2dbd25b 100644
+--- a/nova.conf
++++ b/nova.conf
+@@ -1,28 +1,81 @@
+ [DEFAULT]
+-logdir = /var/log/nova
+-state_path = /var/lib/nova
+-lock_path = /var/lib/nova/tmp
+-volumes_dir = /etc/nova/volumes
+-dhcpbridge = /usr/bin/nova-dhcpbridge
+-dhcpbridge_flagfile = /etc/nova/nova.conf
++verbose=true
++my_ip=192.168.0.10
++allow_admin_api=true
++api_paste_config=/etc/nova/api-paste.ini
++instances_path=/var/lib/nova/instances
++compute_driver=libvirt.LibvirtDriver
++rootwrap_config=/etc/nova/rootwrap.conf
++multi_host=true
++send_arp_for_ha=true
++libvirt_nonblocking=True
++libvirt_inject_partition=-1
++
++#behavior of an instance of when the host has been started
++start_guests_on_host_boot=true
++resume_guests_state_on_host_boot=true
++
++#logging and other administrative
++logdir=/var/log/nova
++state_path=/var/lib/nova
++lock_path=/var/lib/nova/tmp
++
++#network
++libvirt_use_virtio_for_bridges = True
++network_manager=nova.network.manager.FlatDHCPManager
++dhcpbridge_flagfile=/etc/nova/nova.conf
++dhcpbridge=/usr/bin/nova-dhcpbridge
++public_interface=br100
++flat_interface=eth0
++flat_network_bridge=br100
++fixed_range=10.0.0.0/24
++flat_network_dhcp_start=10.0.0.2
++network_size=255
+ force_dhcp_release = True
+ injected_network_template = /usr/share/nova/interfaces.template
+-libvirt_nonblocking = True
+-libvirt_inject_partition = -1
+-network_manager = nova.network.manager.FlatDHCPManager
+-iscsi_helper = tgtadm
+-sql_connection = mysql://nova:nova@localhost/nova
+-compute_driver = libvirt.LibvirtDriver
+-firewall_driver = nova.virt.libvirt.firewall.IptablesFirewallDriver
++flat_injected=false
++use_ipv6=false
++
++#vnc
++novncproxy_base_url=http://192.168.0.10:6080/vnc_auto.html
++xvpvncproxy_base_url=http://192.168.0.10:6081/console
++vncserver_proxyclient_address=127.0.0.1
++vncserver_listen=0.0.0.0
++vnc_keymap=ja
++
++#scheduler
++scheduler_driver=nova.scheduler.filter_scheduler.FilterScheduler
++
++#object
++s3_host=stack01
++use_cow_images=yes
++
++#glance
++image_service=nova.image.glance.GlanceImageService
++glance_api_servers=stack01:9292
++
++#qpid
+ rpc_backend = nova.openstack.common.rpc.impl_qpid
+-rootwrap_config = /etc/nova/rootwrap.conf
+-
+-[keystone_authtoken]
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
+-auth_host = 127.0.0.1
+-auth_port = 35357
+-auth_protocol = http
+-signing_dir = /tmp/keystone-signing-nova
++qpid_hostname=stack01
++qpid_port=5672
++#qpid_username=
++#qpid_password=
++
++#nova database
++sql_connection=mysql://nova:password@stack01/nova
++
++#use cinder
++#enabled_apis=ec2,osapi_compute,metadata
++enabled_apis=ec2,osapi_compute
++volume_api_class=nova.volume.cinder.API
++
++#keystone
++auth_strategy=keystone
++keystone_ec2_url=http://stack01:5000/v2.0/ec2tokens
++
++#firewall
++firewall_driver = nova.virt.libvirt.firewall.IptablesFirewallDriver
++
++#memcache
++#memcached_servers=stack01:11211
+ 

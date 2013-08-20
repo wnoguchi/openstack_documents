@@ -1,0 +1,72 @@
+diff --git a/api-paste.ini b/api-paste.ini
+index 1838881..045cfe9 100644
+--- a/api-paste.ini
++++ b/api-paste.ini
+@@ -51,6 +51,13 @@ paste.filter_factory = cinder.api.middleware.auth:CinderKeystoneContext.factory
+ [filter:authtoken]
+ paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+ service_protocol = http
+-service_host = 127.0.0.1
++service_host = stack01
+ service_port = 5000
++auth_host = stack01
++auth_port = 35357
++auth_protocol = http
++admin_tenant_name = service
++admin_user = nova
++admin_password = nova
+ signing_dir = /var/lib/cinder
++
+diff --git a/cinder.conf b/cinder.conf
+index 89105a6..aa739f5 100644
+--- a/cinder.conf
++++ b/cinder.conf
+@@ -1,18 +1,34 @@
+ [DEFAULT]
+-logdir = /var/log/cinder
++#misc
++verbose = True
++auth_strategy = keystone
++rootwrap_config = /etc/cinder/rootwrap.conf
++api_paste_config = /etc/cinder/api-paste.ini
++auth_strategy = keystone
+ state_path = /var/lib/cinder
+-lock_path = /var/lib/cinder/tmp
+-volumes_dir = /etc/cinder/volumes
+-iscsi_helper = tgtadm
+-sql_connection = mysql://cinder:cinder@localhost/cinder
++volumes_dir = /var/lib/cinder/volumes
++
++#log
++log_file=cinder.log
++log_dir=/var/log/cinder
++
++#osapi
++osapi_volume_extension = cinder.api.openstack.volume.contrib.standard_extensions
++
++#qpid
+ rpc_backend = cinder.openstack.common.rpc.impl_qpid
+-rootwrap_config = /etc/cinder/rootwrap.conf
+ 
+-[keystone_authtoken]
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
+-auth_host = 127.0.0.1
+-auth_port = 35357
+-auth_protocol = http
+-signing_dirname = /tmp/keystone-signing-cinder
++qpid_port = 5672
++#qpid_username =
++#qpid_password =
++
++#sql
++sql_connection = mysql://cinder:password@stack01/cinder?charset=utf8
++
++#volume
++volume_name_template = volume-%s
++volume_group = cinder-volumes
++
++#iscsi
++iscsi_helper = tgtadm
++

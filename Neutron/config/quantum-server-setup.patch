@@ -1,0 +1,63 @@
+diff --git a/plugin.ini b/plugin.ini
+new file mode 120000
+index 0000000..87b096e
+--- /dev/null
++++ b/plugin.ini
+@@ -0,0 +1 @@
++/etc/quantum/plugins/linuxbridge/linuxbridge_conf.ini
+\ No newline at end of file
+diff --git a/plugins/linuxbridge/linuxbridge_conf.ini b/plugins/linuxbridge/linuxbridge_conf.ini
+index c9fe85c..e59bc66 100644
+--- a/plugins/linuxbridge/linuxbridge_conf.ini
++++ b/plugins/linuxbridge/linuxbridge_conf.ini
+@@ -26,7 +26,7 @@
+ # sql_connection = mysql://root:nova@127.0.0.1:3306/quantum_linux_bridge
+ # Replace 127.0.0.1 above with the IP address of the database used by the
+ # main quantum server. (Leave it as is if the database runs on this host.)
+-sql_connection = sqlite://
++sql_connection = mysql://quantum:=password@stack01/quantum_linux_bridge
+ # Database reconnection retry times - in event connectivity is lost
+ # set to -1 implies an infinite retry count
+ # sql_max_retries = 10
+@@ -44,6 +44,7 @@ reconnect_interval = 2
+ # sql_idle_timeout = 3600
+ 
+ [LINUX_BRIDGE]
++physical_interface = eth0
+ # (ListOpt) Comma-separated list of
+ # <physical_network>:<physical_interface> tuples mapping physical
+ # network names to the agent's node-specific physical network
+diff --git a/quantum.conf b/quantum.conf
+index 4d7aef7..39db6e0 100644
+--- a/quantum.conf
++++ b/quantum.conf
+@@ -55,7 +55,7 @@ api_paste_config = api-paste.ini
+ 
+ # The strategy to be used for auth.
+ # Supported values are 'keystone'(default), 'noauth'.
+-auth_strategy = noauth
++auth_strategy = keystone
+ 
+ # Base MAC address. The first 3 octets will remain unchanged. If the
+ # 4h octet is not 00, it will also used. The others will be
+@@ -193,6 +193,9 @@ default_notification_level = INFO
+ # Defined in rpc_notifier, can be comma separated values.
+ # The actual topic names will be %s.%(default_notification_level)s
+ notification_topics = notifications
++core_plugin = quantum.plugins.linuxbridge.lb_quantum_plugin.LinuxBridgePluginV2
++rpc_backend = quantum.openstack.common.rpc.impl_qpid
++qpid_hostname = localhost
+ 
+ # Default maximum number of items returned in a single response,
+ # value == infinite and value < 0 means no max limit, and value must
+@@ -281,7 +284,7 @@ root_helper = sudo quantum-rootwrap /etc/quantum/rootwrap.conf
+ auth_host = 127.0.0.1
+ auth_port = 35357
+ auth_protocol = http
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
+ signing_dir = /var/lib/quantum/keystone-signing
++admin_tenant_name = service
++admin_user = quantum
++admin_password = servicepass

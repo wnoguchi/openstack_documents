@@ -1,0 +1,37 @@
+diff --git a/api-paste.ini b/api-paste.ini
+index 1838881..1b6808b 100644
+--- a/api-paste.ini
++++ b/api-paste.ini
+@@ -51,6 +51,6 @@ paste.filter_factory = cinder.api.middleware.auth:CinderKeystoneContext.factory
+ [filter:authtoken]
+ paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+ service_protocol = http
+-service_host = 127.0.0.1
++service_host = stack01
+ service_port = 5000
+ signing_dir = /var/lib/cinder
+diff --git a/cinder.conf b/cinder.conf
+index 89105a6..a2a63b4 100644
+--- a/cinder.conf
++++ b/cinder.conf
+@@ -4,15 +4,15 @@ state_path = /var/lib/cinder
+ lock_path = /var/lib/cinder/tmp
+ volumes_dir = /etc/cinder/volumes
+ iscsi_helper = tgtadm
+-sql_connection = mysql://cinder:cinder@localhost/cinder
++sql_connection = mysql://cinder:password@stack01/cinder?charset=utf8
+ rpc_backend = cinder.openstack.common.rpc.impl_qpid
+ rootwrap_config = /etc/cinder/rootwrap.conf
+ 
+ [keystone_authtoken]
+-admin_tenant_name = %SERVICE_TENANT_NAME%
+-admin_user = %SERVICE_USER%
+-admin_password = %SERVICE_PASSWORD%
+-auth_host = 127.0.0.1
++admin_tenant_name = service
++admin_user = nova
++admin_password = nova
++auth_host = stack01
+ auth_port = 35357
+ auth_protocol = http
+ signing_dirname = /tmp/keystone-signing-cinder
