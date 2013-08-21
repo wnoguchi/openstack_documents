@@ -704,9 +704,25 @@ enable_service q-dhcp
 enable_service q-l3
 ```
 
-oh god.
-
 [devstackを利用したquantumのインストールについて - Google グループ](https://groups.google.com/forum/#!topic/openstack-ja/2QkazjDLva8)
+
+ここでNIC2枚ないとだめって言われてた気がしたので、FLAT_INTERFACE=eth1にしたの。
+そしたら10.0.0.1からはping返ってくるでしょ。
+
+restackした直後にprivateネットワークが見えてるんだけど、インスタンスを接続できないんだよね。
+なんでかなって思ったら、管理タブで「共有」にチェック入れたらインスタンス起動時にprivateネットワーク選べるようになりました。
+で、devstackホスト内で10.0.0.3（最初のインスタンス）にping打ったら返ってこない。
+なんでかなって思ったらセキュリティグループ編集したらいけました。
+あとはフローティングIPあてるだけだなって思った。
+でもうまくいかない。
+
+```
+エラー: External network 8932e474-790f-4f07-955d-8c5e6e94752f is not reachable from subnet cd9ac8c8-1f51-4c66-aae4-3b1817a88671. Therefore, cannot associate Port 7f210130-80fc-4aa5-b677-00d1a41f9e69 with a Floating IP.
+```
+
+なんか言ってる。
+
+うーん。とりあえずdevstackの中で10.0.0.3に鍵つけてsshしたら普通にログインできた。10.0.0.1にはping飛ぶけどそれ以上外にはいけない。
 
 ## 参考リンク
 
