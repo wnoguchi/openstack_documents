@@ -706,6 +706,8 @@ enable_service q-l3
 
 oh god.
 
+[devstackを利用したquantumのインストールについて - Google グループ](https://groups.google.com/forum/#!topic/openstack-ja/2QkazjDLva8)
+
 ## 参考リンク
 
 - [Single Machine Guide - DevStack](http://devstack.org/guides/single-machine.html)
