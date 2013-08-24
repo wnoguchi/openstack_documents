@@ -725,6 +725,9 @@ restackした直後にprivateネットワークが見えてるんだけど、イ
 うーん。とりあえずdevstackの中で10.0.0.3に鍵つけてsshしたら普通にログインできた。  
 10.0.0.1にはping飛ぶけどそれ以上外にはいけない。
 
+[DevStack — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_faq_grizzly/devstack.html)
+
+
 ## 参考リンク
 
 - [Single Machine Guide - DevStack](http://devstack.org/guides/single-machine.html)
