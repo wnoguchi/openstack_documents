@@ -100,6 +100,17 @@ pip install netaddr
 
 なんでおそいの。
 
+- [Dpkg and apt-get reading database is really slow [fixed] : Frozentux](http://www.frozentux.net/2009/08/dpkg-and-apt-get-reading-database-is-really-slow-fixed/)
+- [dpkg tip | Antti-Juhani Kaijanaho](http://antti-juhani.kaijanaho.fi/newblog/archives/521)
+
+```
+sudo dpkg --clear-avail
+sudo dpkg --forget-old-unavail
+dpkg: warning: obsolete '--forget-old-unavail' option; unavailable packages are automatically cleaned up
+
+sudo apt-get -y update
+```
+
 ### Temp
 
 ```
