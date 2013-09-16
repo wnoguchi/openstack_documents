@@ -86,30 +86,21 @@ Enter a password now:
 2013-09-16 23:23:13 stack.sh failed: full log in /opt/stack/logs/stack.sh.log.2013-09-16-232302
 ```
 
-netaddrって何？
+**netaddrって何？**
 
 - [Bug #1097667 “stack.sh should install missing dependency python-...” : Bugs : devstack](https://bugs.launchpad.net/devstack/+bug/1097667)
 - [Python で IP, MAC アドレス扱うなら netaddr が超便利！ | CUBE SUGAR STORAGE](http://momijiame.tumblr.com/post/50497347245/python-ip-mac-netaddr)
 
 ```
 sudo apt-get -y install python-pip
-pip install netaddr
+sudo pip install netaddr
 ```
 
-[ubuntu New Install - Very slow at "Reading package lists..." in apt-get](http://ubuntuforums.org/showthread.php?t=2104709)
-
-なんでおそいの。
-
-- [Dpkg and apt-get reading database is really slow [fixed] : Frozentux](http://www.frozentux.net/2009/08/dpkg-and-apt-get-reading-database-is-really-slow-fixed/)
-- [dpkg tip | Antti-Juhani Kaijanaho](http://antti-juhani.kaijanaho.fi/newblog/archives/521)
-
 ```
-sudo dpkg --clear-avail
-sudo dpkg --forget-old-unavail
-dpkg: warning: obsolete '--forget-old-unavail' option; unavailable packages are automatically cleaned up
-
-sudo apt-get -y update
+./stack.sh
 ```
+
+寝る。
 
 ### Temp
 
