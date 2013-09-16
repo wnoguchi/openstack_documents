@@ -727,6 +727,47 @@ restackした直後にprivateネットワークが見えてるんだけど、イ
 
 [DevStack — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_faq_grizzly/devstack.html)
 
+```
+HOST_IP=192.168.1.10
+
+ADMIN_PASSWORD=supersecret
+MYSQL_PASSWORD=iheartdatabases
+RABBIT_PASSWORD=flopsymopsy
+SERVICE_PASSWORD=iheartksl
+SERVICE_TOKEN=a91e1afd9aef8879326c
+
+SYSLOG=True
+LOGFILE=/opt/stack/logs/devstack.log
+
+disable_service n-net
+enable_service q-svc
+enable_service q-agt
+enable_service q-dhcp
+enable_service q-l3
+enable_service q-meta
+enable_service quantum
+
+Q_PLUGIN=openvswitch
+FIXED_RANGE=100.0.0.0/24
+NETWORK_GATEWAY=100.0.0.254
+FLOATING_RANGE=200.0.0.0/24
+FLAT_INTERFACE=eth0
+PUBLIC_INTERFACE=eth0
+
+ENABLE_TENANT_TUNNELS=True
+MULTI_HOST=True
+
+VOLUME_BACKING_FILE_SIZE=10000M
+
+#NOVA_BRANCH=stable/grizzly
+#GLANCE_BRANCH=stable/grizzly
+#KEYSTONE_BRANCH=stable/grizzly
+#HORIZON_BRANCH=stable/grizzly
+#CINDER_BRANCH=stable/grizzly
+#QUANTUM_BRANCH=stable/grizzly
+#HEAT_BRANCH=stable/grizzly
+#CEILOMETER_BRANCH=stable/grizzly
+```
 
 ## 参考リンク
 
