@@ -54,6 +54,52 @@ cp samples/localrc .
 pending.
 ```
 
+### 実行
+
+```
+./stack.sh
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+ImportError: No module named netaddr
+Traceback (most recent call last):
+  File "<string>", line 2, in <module>
+ImportError: No module named netaddr
+Using mysql database backend
+
+################################################################################
+ENTER A SERVICE_TOKEN TO USE FOR THE SERVICE ADMIN TOKEN.
+################################################################################
+This value will be written to your localrc file so you don't have to enter it 
+again.  Use only alphanumeric characters.
+If you leave this blank, a random default value will be used.
+Enter a password now:
+
+(snip)
+
+2013-09-16 23:23:13 E: Could not get lock /var/lib/dpkg/lock - open (11: Resource temporarily unavailable)
+2013-09-16 23:23:13 E: Unable to lock the administration directory (/var/lib/dpkg/), is another process using it?
+2013-09-16 23:23:13 +++ failed
+2013-09-16 23:23:13 +++ local r=100
+2013-09-16 23:23:13 ++++ jobs -p
+2013-09-16 23:23:13 +++ kill
+2013-09-16 23:23:13 +++ set +o xtrace
+2013-09-16 23:23:13 stack.sh failed: full log in /opt/stack/logs/stack.sh.log.2013-09-16-232302
+```
+
+netaddrって何？
+
+- [Bug #1097667 “stack.sh should install missing dependency python-...” : Bugs : devstack](https://bugs.launchpad.net/devstack/+bug/1097667)
+- [Python で IP, MAC アドレス扱うなら netaddr が超便利！ | CUBE SUGAR STORAGE](http://momijiame.tumblr.com/post/50497347245/python-ip-mac-netaddr)
+
+```
+sudo apt-get -y install python-pip
+pip install netaddr
+```
+
+[ubuntu New Install - Very slow at "Reading package lists..." in apt-get](http://ubuntuforums.org/showthread.php?t=2104709)
+
+なんでおそいの。
+
 ### Temp
 
 ```
