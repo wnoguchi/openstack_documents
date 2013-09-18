@@ -50,6 +50,15 @@ git checkout stable/grizzly
 cp samples/localrc .
 ```
 
+### 実験しやすくする（バージョン管理する）
+
+```
+cd ..
+git clone https://gist.github.com/c31e7e1933d34dcf979e.git
+mv c31e7e1933d34dcf979e/ config
+ln -s /home/stack/config/localrc /home/stack/devstack/localrc
+```
+
 ```
 pending.
 ```
@@ -98,9 +107,11 @@ sudo pip install netaddr
 
 ```
 ./stack.sh
+ENTER EXTRA なんちゃら
+（ENTERをキーイン ）
 ```
 
-寝る。
+寝る（2度目）。
 
 ### Temp
 
