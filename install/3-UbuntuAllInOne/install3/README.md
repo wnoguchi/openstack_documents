@@ -4,7 +4,11 @@
 [OpenStack-Grizzly-Install-Guide/OpenStack_Grizzly_Install_Guide.rst at master · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/blob/master/OpenStack_Grizzly_Install_Guide.rst)
 このガイドを参考にする。
 
-## インストール
+* ログ的なもおのは以下に貼り付ける。
+
+[OpenStack Grizzly on Ubuntu logs and snippets.](https://gist.github.com/wnoguchi/b4377e74d3825610780f)
+
+## ノードの準備
 
 ### 事前準備
 
@@ -39,126 +43,28 @@ apt-get -y dist-upgrade
 ```
 #For Exposing OpenStack API over the internet
 auto eth0
-iface eth0 inet static
-address 192.168.1.200
-netmask 255.255.255.0
-gateway 192.168.1.1
-dns-nameservers 8.8.8.8
+	iface eth0 inet static
+	address 192.168.1.200
+	netmask 255.255.255.0
+	gateway 192.168.1.1
+	dns-nameservers 8.8.8.8
 
 #Not internet connected(used for OpenStack management)
 auto eth1
-iface eth1 inet static
-address 10.10.100.51
-netmask 255.255.255.0
+	iface eth1 inet static
+	address 10.10.100.51
+	netmask 255.255.255.0
 ```
 
-* ネットワーク再起動
-
-- [Ubuntu日本語フォーラム / service /etc/init.d/networking restart がunrecognized servce ...](https://forums.ubuntulinux.jp/viewtopic.php?id=9522)
-
-```
-root@stack01:~# /etc/init.d/networking restart
- * Running /etc/init.d/networking restart is deprecated because it may not enable again some interfaces
- * Reconfiguring network interfaces...
- * Disconnecting iSCSI targets
-   ...done.
- * Stopping iSCSI initiator service
-   ...done.
-RTNETLINK answers: No such process
- * Disconnecting iSCSI targets
-   ...done.
- * Stopping iSCSI initiator service
-   ...done.
-RTNETLINK answers: File exists
-Failed to bring up eth0.
- * Starting iSCSI initiator service iscsid
-   ...done.
- * Setting up iSCSI targets
-   ...done.
-ssh stop/waiting
-ssh start/running, process 7464
-   ...done.
-```
-
-なにこれ。
-
-- [玄柴/ホスト名とIPアドレスの設定 - PelicanWiki](http://pelican.ddo.jp/fukurou/mediawiki/index.php/%E7%8E%84%E6%9F%B4/%E3%83%9B%E3%82%B9%E3%83%88%E5%90%8D%E3%81%A8IP%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9%E3%81%AE%E8%A8%AD%E5%AE%9A)
-
-```
-oot@stack01:~# /etc/init.d/networking stop && /etc/init.d/networking start
- * Deconfiguring network interfaces...
- * Disconnecting iSCSI targets
-   ...done.
- * Stopping iSCSI initiator service
-   ...done.
-   ...done.
-Rather than invoking init scripts through /etc/init.d, use the service(8)
-utility, e.g. service networking start
-
-Since the script you are attempting to invoke has been converted to an
-Upstart job, you may also use the start(8) utility, e.g. start networking
-networking stop/waiting
-
-```
-
-あとで勉強しよう。とりあえず手っ取り早くリブート。
-
-```
-sudo reboot
-```
-
-```
-root@stack01:~# ifconfig
-eth0      Link encap:Ethernet  HWaddr 00:22:4d:69:07:7e
-          inet addr:192.168.1.200  Bcast:192.168.1.255  Mask:255.255.255.0
-          inet6 addr: fe80::222:4dff:fe69:77e/64 Scope:Link
-          inet6 addr: 2001:c90:8780:734a:bc4c:eea4:42f2:c44e/64 Scope:Global
-          inet6 addr: 2001:c90:8780:734a:222:4dff:fe69:77e/64 Scope:Global
-          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-          RX packets:188 errors:0 dropped:28 overruns:0 frame:0
-          TX packets:127 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:21704 (21.7 KB)  TX bytes:19449 (19.4 KB)
-          Interrupt:20 Memory:efa00000-efa20000
-
-eth1      Link encap:Ethernet  HWaddr 00:22:4d:69:07:7d
-          inet addr:10.10.100.51  Bcast:10.10.100.255  Mask:255.255.255.0
-          UP BROADCAST MULTICAST  MTU:1500  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
-          Interrupt:18 Memory:ef900000-ef920000
-
-lo        Link encap:Local Loopback
-          inet addr:127.0.0.1  Mask:255.0.0.0
-          inet6 addr: ::1/128 Scope:Host
-          UP LOOPBACK RUNNING  MTU:65536  Metric:1
-          RX packets:130 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:130 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0
-          RX bytes:8406 (8.4 KB)  TX bytes:8406 (8.4 KB)
-
-virbr0    Link encap:Ethernet  HWaddr de:09:e4:ae:2c:99
-          inet addr:192.168.122.1  Bcast:192.168.122.255  Mask:255.255.255.0
-          UP BROADCAST MULTICAST  MTU:1500  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:0
-          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
-```
+* システム再起動
 
 ### MySQL & RabbitMQ
 
 ```
 apt-get install -y mysql-server python-mysqldb
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
+service mysql restart
 apt-get install -y rabbitmq-server
-```
-
-* NTSサービスのインストール
-
-```
 apt-get install -y ntp
 ```
 
@@ -177,6 +83,86 @@ sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 ```
 sysctl net.ipv4.ip_forward=1
 ```
+
+## Keystone
+
+```
+apt-get install -y keystone
+```
+
+* Keystone動いていることを確認する。
+
+```
+service keystone status
+
+keystone start/running, process 3580
+```
+
+* Keystoneデータベース作成。
+
+```
+mysql -u root -ppassword
+CREATE DATABASE keystone;
+GRANT ALL ON keystone.* TO 'keystoneUser'@'%' IDENTIFIED BY 'keystonePass';
+quit;
+```
+
+* `/etc/keystone/keystone.conf`
+
+```
+connection = mysql://keystoneUser:keystonePass@10.10.100.51/keystone
+```
+
+* Identity Serviceを再起動。DB同期。
+
+```
+service keystone restart
+keystone-manage db_sync
+```
+
+```
+git clone https://gist.github.com/b4377e74d3825610780f.git
+cd b4377e74d3825610780f/
+
+#Modify the HOST_IP and HOST_IP_EXT variables before executing the scripts
+sh keystone_basic.sh
+sh keystone_endpoints_basic.sh
+```
+
+* のちのち読み込むクレデンシャルファイル `creds` を作成する
+
+```
+# creds
+export OS_TENANT_NAME=admin
+export OS_USERNAME=admin
+export OS_PASSWORD=admin_pass
+export OS_AUTH_URL="http://192.168.1.200:5000/v2.0/"
+```
+
+* ロード
+
+```
+source creds
+```
+
+* Keystoneのテスト
+
+```
+root@stack01:~/b4377e74d3825610780f# keystone user-list
++----------------------------------+---------+---------+--------------------+
+|                id                |   name  | enabled |       email        |
++----------------------------------+---------+---------+--------------------+
+| 652e949b65d144aa9e703017835b4d2c |  admin  |   True  |  admin@domain.com  |
+| ecec2eb6154f4eaeaddf6258c15cd63a |  cinder |   True  | cinder@domain.com  |
+| f30108077fc749c7a92ecbb6e3a92bac |  glance |   True  | glance@domain.com  |
+| ba61c5b2e22f4768801b6255a2db7b30 |   nova  |   True  |  nova@domain.com   |
+| 4590f63aa4574afa9d7e3c70f8abf12f | quantum |   True  | quantum@domain.com |
++----------------------------------+---------+---------+--------------------+
+```
+
+## Glance
+
+
 
 ## 参考サイト
 
