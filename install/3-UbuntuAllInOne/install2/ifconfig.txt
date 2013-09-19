@@ -1,0 +1,37 @@
+stack@stack01:~/devstack$ ifconfig
+eth0      Link encap:Ethernet  HWaddr 00:22:4d:69:07:7e
+          inet addr:192.168.1.200  Bcast:192.168.1.255  Mask:255.255.255.0
+          inet6 addr: 2001:c90:8780:734a:a8c7:bb35:7a0c:1c3d/64 Scope:Global
+          inet6 addr: fe80::222:4dff:fe69:77e/64 Scope:Link
+          inet6 addr: 2001:c90:8780:734a:222:4dff:fe69:77e/64 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:974 errors:0 dropped:439 overruns:0 frame:0
+          TX packets:328 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:89743 (89.7 KB)  TX bytes:64002 (64.0 KB)
+          Interrupt:20 Memory:efa00000-efa20000
+ 
+eth1      Link encap:Ethernet  HWaddr 00:22:4d:69:07:7d
+          UP BROADCAST PROMISC MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+          Interrupt:18 Memory:ef900000-ef920000
+ 
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:148 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:148 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:9690 (9.6 KB)  TX bytes:9690 (9.6 KB)
+ 
+virbr0    Link encap:Ethernet  HWaddr c2:5f:80:04:59:77
+          inet addr:192.168.122.1  Bcast:192.168.122.255  Mask:255.255.255.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)

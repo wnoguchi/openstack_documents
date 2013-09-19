@@ -171,6 +171,9 @@ SERVICE_PASSWORD=$ADMIN_PASSWORD
 git clone git://github.com/openstack/nova.git /opt/stack/nova
 ```
 
+ムリポ。。。ワカランぽ。。。  
+挫折。。。
+
 ## 参考サイト
 
 - [Single Machine Guide - DevStack](http://devstack.org/guides/single-machine.html)
