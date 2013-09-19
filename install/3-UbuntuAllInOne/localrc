@@ -20,7 +20,7 @@
 
 # While ``stack.sh`` is happy to run without ``localrc``, devlife is better when
 # there are a few minimal variables set:
-FLOATING_RANGE=192.168.1.224/27
+FLOATING_RANGE=192.168.20.224/27
 FIXED_RANGE=10.11.12.0/24
 FIXED_NETWORK_SIZE=256
 FLAT_INTERFACE=eth0

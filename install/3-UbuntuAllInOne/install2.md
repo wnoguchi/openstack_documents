@@ -111,7 +111,59 @@ ENTER EXTRA なんちゃら
 （ENTERをキーイン ）
 ```
 
-寝る（2度目）。
+以下のキーワードで検索
+
+```
+checking http://169.254.169.254/ devstack all-in-one
+```
+
+プロミスキャスモード？
+
+- [OpenStack Folsom Quantum Devstack Installation Tutorial](http://networkstatic.net/openstack-folsom-quantum-devstack-installation-tutorial/)
+- [Ubuntuのブリッジ接続設定 - ぽたうんのメモ帳](http://d.hatena.ne.jp/portown/20110211/1297354625)
+- [知らないと地味にハマるOpen stackインストール時の注意点](http://www.slideshare.net/d-shen/open-stack)
+
+```
+http://169.254.169.254/2009-04-04/instance-id
+```
+
+- [Devstack Grizzly networking help needed | OpenStack | Dev](http://www.gossamer-threads.com/lists/openstack/dev/29795)
+
+```
+auto eth0
+iface eth0 inet static 
+      address 192.168.1.200 
+      netmask 255.255.255.0 
+      network 192.168.1.0 
+      broadcast 192.168.1.255 
+      gateway 192.168.1.1 
+      dns-nameservers 8.8.8.8 8.8.4.4 
+
+#Secondary network not connected to anything(cable not plugged in) 
+auto eth1 
+      iface eth1 inet manual 
+      up ifconfig $IFACE 0.0.0.0 up 
+      up ip link set $IFACE promisc on 
+      down ip link set $IFACE promisc off 
+      down ifconfig $IFACE down 
+
+```
+
+```
+# While ``stack.sh`` is happy to run without ``localrc``, devlife is better when
+# there are a few minimal variables set:
+FLOATING_RANGE=192.168.1.224/27
+FIXED_RANGE=10.11.12.0/24
+FIXED_NETWORK_SIZE=256
+FLAT_INTERFACE=eth0
+
+# If the ``*_PASSWORD`` variables are not set here you will be prompted to enter
+# values for them by ``stack.sh`` and they will be added to ``localrc``.
+ADMIN_PASSWORD=nomoresecrete
+MYSQL_PASSWORD=stackdb
+RABBIT_PASSWORD=stackqueue
+SERVICE_PASSWORD=$ADMIN_PASSWORD
+```
 
 ### Temp
 
