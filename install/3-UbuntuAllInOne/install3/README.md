@@ -306,6 +306,27 @@ service glance-registry restart; service glance-api restart
 glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
 ```
 
+`sh keystone_endpoints_basic.sh` を見たら `EXT_HOST_IP=192.168.100.51` がハードコードされてた。。。。。。  
+ぐぬぬ。。。
+
+```
+EXT_HOST_IP=192.168.100.51
+# ↓
+EXT_HOST_IP=192.168.1.200
+```
+
+もう一回run。
+
+```
+sh keystone_endpoints_basic.sh
+```
+
+```
+```
+
+↓以下、まだ出来てない。
+
+
 * アップされたイメージがリストされていることを確認する
 
 ```
