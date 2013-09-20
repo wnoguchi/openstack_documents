@@ -8,6 +8,12 @@
 
 [OpenStack Grizzly on Ubuntu logs and snippets.](https://gist.github.com/wnoguchi/b4377e74d3825610780f)
 
+## メモ
+
+```
+apt-get -y install vim tmux curl git
+```
+
 ## ノードの準備
 
 ### 事前準備
@@ -162,7 +168,149 @@ root@stack01:~/b4377e74d3825610780f# keystone user-list
 
 ## Glance
 
+* インストール
 
+```
+apt-get install -y glance
+```
+
+* Glanceサービスが動いていることを確認する
+
+```
+service glance-api status
+service glance-registry status
+```
+
+* MySQLデータベースを構築する
+
+```
+mysql -u root -ppassword
+CREATE DATABASE glance;
+GRANT ALL ON glance.* TO 'glanceUser'@'%' IDENTIFIED BY 'glancePass';
+quit;
+```
+
+* 以下は主にglance apiの認証関係の設定です。
+
+* `/etc/glance/glance-api-paste.ini` を変更する
+
+```
+[filter:authtoken]
+paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+delay_auth_decision = true
+
+# ↓
+
+[filter:authtoken]
+paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+delay_auth_decision = true
+auth_host = 10.10.100.51
+auth_port = 35357
+auth_protocol = http
+admin_tenant_name = service
+admin_user = glance
+admin_password = service_pass
+```
+
+* `/etc/glance/glance-registry-paste.ini`
+
+```
+[filter:authtoken]
+paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+
+# ↓
+
+[filter:authtoken]
+paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+auth_host = 10.10.100.51
+auth_port = 35357
+auth_protocol = http
+admin_tenant_name = service
+admin_user = glance
+admin_password = service_pass
+```
+
+* `/etc/glance/glance-api.conf`
+
+```
+sql_connection = sqlite:////var/lib/glance/glance.sqlite
+# ↓
+sql_connection = mysql://glanceUser:glancePass@10.10.100.51/glance
+
+# (snip)
+
+[paste_deploy]
+flavor = keystone
+```
+
+* glance-api と glance-registry サービスの再起動する
+
+```
+service glance-api restart; service glance-registry restart
+
+glance-api stop/waiting
+glance-api start/running, process 6399
+glance-registry stop/waiting
+glance-registry start/running, process 6404
+```
+
+* Glanceデータベース同期
+
+```
+glance-manage db_sync
+```
+
+* さらに再起動
+
+```
+service glance-registry restart; service glance-api restart
+```
+
+* Glanceが正常に稼働しているかテストのため cirros のイメージをネット上から取得して登録する
+
+```
+glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+
+Error communicating with http://192.168.100.51:9292 [Errno 113] No route to host
+```
+
+エラーになった。  
+しかたがないのでwgetでダウンロードをかましてレジストリする。
+
+```
+wget https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location cirros-0.3.0-x86_64-disk.img
+
+Error communicating with http://192.168.100.51:9292 [Errno 110] Connection timed out
+```
+
+またエラー。なんなの。。。
+
+* `/etc/glance/glance-api-paste.ini`
+
+```
+# Address to bind the API server
+bind_host = 0.0.0.0
+
+# ↓
+
+# Address to bind the API server
+bind_host = 192.168.1.200
+```
+
+* さらに再起動
+
+```
+glance-manage db_sync
+service glance-registry restart; service glance-api restart
+glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+```
+
+* アップされたイメージがリストされていることを確認する
+
+```
+glance image-list
+```
 
 ## 参考サイト
 
