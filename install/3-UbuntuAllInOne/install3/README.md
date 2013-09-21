@@ -4,7 +4,7 @@
 [OpenStack-Grizzly-Install-Guide/OpenStack_Grizzly_Install_Guide.rst at master · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/blob/master/OpenStack_Grizzly_Install_Guide.rst)
 このガイドを参考にする。
 
-## 必須じゃないけどまず初めにこれぐらいインストールしといてもいいかなって思うパッケージ
+* 必須じゃないけどまず初めにこれぐらいインストールしといてもいいかなって思うパッケージ
 
 ```
 apt-get -y install vim tmux curl git
