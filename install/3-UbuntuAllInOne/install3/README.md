@@ -1089,6 +1089,239 @@ tailf /var/log/apache2/error.log
 
 
 
+
+
+
+apt-get install -y openstack-dashboard libapache2-mod-wsgi
+
+
+[Horizon "OfflineGenerationError" · Issue #59 · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/issues/59)
+
+
+
+apt-get install memcached libapache2-mod-wsgi openstack-dashboard
+
+[1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
+
+keystoneのエンドポイントが間違ってる。。。
+
+```
+# keystone endpoint-list
++----------------------------------+-----------+---------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+|                id                |   region  |                  publicurl                  |                internalurl                |                  adminurl                 |            service_id            |
++----------------------------------+-----------+---------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+| 062a4d2326554cd28a728df45190292a | RegionOne |         http://192.168.100.51:9696/         |         http://10.10.100.51:9696/         |         http://10.10.100.51:9696/         | 64d4be963d7a4dbbb92d26af7cb05474 |
+| 11a164f981514c3e8b69db588c9660ac | RegionOne |          http://192.168.1.200:9696/         |         http://10.10.100.51:9696/         |         http://10.10.100.51:9696/         | 64d4be963d7a4dbbb92d26af7cb05474 |
+| 16eb684e5772461bb3838bf463ad66e3 | RegionOne |         http://192.168.1.200:9292/v2        |        http://10.10.100.51:9292/v2        |        http://10.10.100.51:9292/v2        | 75f6ce0701dc44c7a02b7a0e64431a34 |
+| 17f3379c699c4096a39af644aa906d67 | RegionOne |        http://192.168.1.200:5000/v2.0       |       http://10.10.100.51:5000/v2.0       |       http://10.10.100.51:35357/v2.0      | 420de4954a5a4d85a29e06c4fd69f2d9 |
+| 2920019bcc6e4c648d9804b06f131e58 | RegionOne |         http://192.168.1.200:9292/v2        |        http://10.10.100.51:9292/v2        |        http://10.10.100.51:9292/v2        | 75f6ce0701dc44c7a02b7a0e64431a34 |
+| 2a92564bab2246ccb02b4f845693a108 | RegionOne |   http://192.168.1.200:8773/services/Cloud  |  http://10.10.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Admin  | 20087db9bd814b139af357ba3613cde8 |
+| 46a3f486dc6f421e8d09999f501bf13b | RegionOne |  http://192.168.1.200:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | 09be24f922d3464c9b1c21b1ac39618e |
+| 6619b9d2cb184625921d2fcc94ccc793 | RegionOne | http://192.168.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | 3c1114018c7945ddb5b6202be3f84d0c |
+| 81740d673ae2402a84c21020f8cdca9a | RegionOne |  http://192.168.1.200:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | 3c1114018c7945ddb5b6202be3f84d0c |
+| 8f2350649de14147a0c93c8175b03a0b | RegionOne |  http://192.168.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Admin  | 3a310b52dec54c25aee4b5e56679f5c7 |
+| 9a36ba227f004eecab2f1c73364efc76 | RegionOne |   http://192.168.1.200:8773/services/Cloud  |  http://10.10.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Admin  | 20087db9bd814b139af357ba3613cde8 |
+| a087e33ec98f453499d7bdbf295bbc94 | RegionOne |  http://192.168.1.200:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | 234663ac6fd742cab73a08db40db10a0 |
+| a1989b1b18cc4bf888ecc5854d3ad4ec | RegionOne |          http://192.168.1.200:9696/         |         http://10.10.100.51:9696/         |         http://10.10.100.51:9696/         | 64d4be963d7a4dbbb92d26af7cb05474 |
+| af27d6dd6bf54f459996d05d47daa341 | RegionOne |          http://192.168.1.200:9696/         |         http://10.10.100.51:9696/         |         http://10.10.100.51:9696/         | 64d4be963d7a4dbbb92d26af7cb05474 |
+| afb54b53549d4de0ac362faa72692d43 | RegionOne |  http://192.168.1.200:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | 3c1114018c7945ddb5b6202be3f84d0c |
+| afe9d02c1a19424a814efe5a86d4d08b | RegionOne |        http://192.168.1.200:5000/v2.0       |       http://10.10.100.51:5000/v2.0       |       http://10.10.100.51:35357/v2.0      | 420de4954a5a4d85a29e06c4fd69f2d9 |
+| b6db7b9724d143718ca940d6c11f6a69 | RegionOne |        http://192.168.1.200:5000/v2.0       |       http://10.10.100.51:5000/v2.0       |       http://10.10.100.51:35357/v2.0      | 420de4954a5a4d85a29e06c4fd69f2d9 |
+| b76948e8695945b6ba3889d809a25e94 | RegionOne |        http://192.168.100.51:9292/v2        |        http://10.10.100.51:9292/v2        |        http://10.10.100.51:9292/v2        | bed10273928e4c92ade16f6d7fa86171 |
+| bd9763b891334608a95d8899922529e8 | RegionOne |   http://192.168.1.200:8773/services/Cloud  |  http://10.10.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Admin  | 20087db9bd814b139af357ba3613cde8 |
+| d063451bc1f64f019eeeb91fa56e4fb1 | RegionOne |         http://192.168.1.200:9292/v2        |        http://10.10.100.51:9292/v2        |        http://10.10.100.51:9292/v2        | 75f6ce0701dc44c7a02b7a0e64431a34 |
+| e3720fcc58fe426f8c2bf5b9b3ac18cc | RegionOne |       http://192.168.100.51:5000/v2.0       |       http://10.10.100.51:5000/v2.0       |       http://10.10.100.51:35357/v2.0      | 420de4954a5a4d85a29e06c4fd69f2d9 |
+| efea12555c0f42e59e980a1fabc36904 | RegionOne |  http://192.168.1.200:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | 0afbdd5d4ffe4213bc81b18306cd8d4f |
+| fc14c3a8277a4667ae376760354cb591 | RegionOne | http://192.168.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | 234663ac6fd742cab73a08db40db10a0 |
+| ff4f3e29392c4d85a82e8d0d5c38e77a | RegionOne |  http://192.168.1.200:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | 234663ac6fd742cab73a08db40db10a0 |
++----------------------------------+-----------+---------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+
+```
+
+```
+mysql> drop database keystone;
+Query OK, 19 rows affected (1.04 sec)
+
+mysql> CREATE DATABASE keystone;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> quit;
+Bye
+
+service keystone restart
+keystone-manage db_sync
+
+root@stack01:~/b4377e74d3825610780f# keystone endpoint-list
+Unable to communicate with identity service: {"error": {"message": "The request you have made requires authentication.", "code": 401, "title": "Not Authorized"}}. (HTTP 401)
+
+oops...
+
+sh keystone_basic.sh
+sh keystone_endpoints_basic.sh
+
+root@stack01:~/b4377e74d3825610780f# keystone endpoint-list
++----------------------------------+-----------+--------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+|                id                |   region  |                 publicurl                  |                internalurl                |                  adminurl                 |            service_id            |
++----------------------------------+-----------+--------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+| 1a28a47862ed417db353bdf7f78b88e2 | RegionOne |         http://192.168.1.200:9696/         |         http://10.10.100.51:9696/         |         http://10.10.100.51:9696/         | 72a2ff928867457ab400f46f88a66467 |
+| 41688030d2974de5b9cbd4ef9bc03254 | RegionOne | http://192.168.1.200:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | b0eb8067c4c749dc95b709d09b3e28b6 |
+| 41c3c1eb7372484a92a8813d411572bd | RegionOne |       http://192.168.1.200:5000/v2.0       |       http://10.10.100.51:5000/v2.0       |       http://10.10.100.51:35357/v2.0      | 0f21d39fd12a4cf1abd6c137fbceec98 |
+| 8438510b93ed4f75a2da7ede25d2ad20 | RegionOne |  http://192.168.1.200:8773/services/Cloud  |  http://10.10.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Admin  | d44e75df616b4bfda775ae59eeb0fe77 |
+| 84465790fc0d41fbb61a97be01e8c40a | RegionOne | http://192.168.1.200:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | 11fb70a50dd44e21862de434e739e00c |
+| cb311b737bd94c4daa4443b548b84d12 | RegionOne |        http://192.168.1.200:9292/v2        |        http://10.10.100.51:9292/v2        |        http://10.10.100.51:9292/v2        | 2dcd41936d3d44f98f32010bfdbfc321 |
++----------------------------------+-----------+--------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+```
+
+endpoint直った。
+
+```
+service apache2 restart; service memcached restart
+```
+
+
+
+
+
+* テナントの作成
+
+```
+root@stack01:~/b4377e74d3825610780f# keystone tenant-create --name project_one
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |                                  |
+|   enabled   |               True               |
+|      id     | aece8dea7b664f99b318705faf698e12 |
+|     name    |           project_one            |
++-------------+----------------------------------+
+```
+
+* ユーザーの作成
+
+```
+root@stack01:~/b4377e74d3825610780f# put_id_of_project_one=aece8dea7b664f99b318705faf698e12
+root@stack01:~/b4377e74d3825610780f# keystone user-create --name=user_one --pass=user_one --tenant-id $put_id_of_project_one --email=user_one@domain.com
++----------+----------------------------------+
+| Property |              Value               |
++----------+----------------------------------+
+|  email   |       user_one@domain.com        |
+| enabled  |               True               |
+|    id    | c0547fd9d0c140feb1fb204159553205 |
+|   name   |             user_one             |
+| tenantId | aece8dea7b664f99b318705faf698e12 |
++----------+----------------------------------+
+
+
+root@stack01:~/b4377e74d3825610780f# keystone role-list
++----------------------------------+----------------------+
+|                id                |         name         |
++----------------------------------+----------------------+
+| 19dac405d88543b19e6230f7ddb1cb44 |    KeystoneAdmin     |
+| 2891487f0108415493a227a9cf5dcd51 | KeystoneServiceAdmin |
+| e3d57319c8fc46b096dcd85ff9906617 |        Member        |
+| 9fe2ff9ee4384b1894a90878d3e92bab |       _member_       |
+| 6ed8d8cf00da4383b69b8eb4e015ba2e |        admin         |
++----------------------------------+----------------------+
+
+
+put_id_of_user_one=c0547fd9d0c140feb1fb204159553205
+put_id_of_member_role=6ed8d8cf00da4383b69b8eb4e015ba2e
+keystone user-role-add --tenant-id $put_id_of_project_one  --user-id $put_id_of_user_one --role-id $put_id_of_member_role
+```
+
+* テナントのネットワークを作成する
+
+```
+root@stack01:~/b4377e74d3825610780f# quantum net-create --tenant-id $put_id_of_project_one net_proj_two
+Created a new network:
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | True                                 |
+| id                        | 81906e14-a6d0-43b3-81a8-3021958837dc |
+| name                      | net_proj_two                         |
+| provider:network_type     | local                                |
+| provider:physical_network |                                      |
+| provider:segmentation_id  |                                      |
+| router:external           | False                                |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| tenant_id                 | aece8dea7b664f99b318705faf698e12     |
++---------------------------+--------------------------------------+
+```
+
+* テナントネットワーク内にサブネットを作成する
+
+```
+quantum subnet-create --tenant-id $put_id_of_project_one net_proj_two 50.50.2.0/24
+
+Created a new subnet:
++------------------+----------------------------------------------+
+| Field            | Value                                        |
++------------------+----------------------------------------------+
+| allocation_pools | {"start": "50.50.2.2", "end": "50.50.2.254"} |
+| cidr             | 50.50.2.0/24                                 |
+| dns_nameservers  |                                              |
+| enable_dhcp      | True                                         |
+| gateway_ip       | 50.50.2.1                                    |
+| host_routes      |                                              |
+| id               | 51d51d52-cf04-4c20-aff7-ebb0d6c5b852         |
+| ip_version       | 4                                            |
+| name             |                                              |
+| network_id       | 81906e14-a6d0-43b3-81a8-3021958837dc         |
+| tenant_id        | aece8dea7b664f99b318705faf698e12             |
++------------------+----------------------------------------------+
+```
+
+* テナントのルーターを作成する
+
+```
+quantum router-create --tenant-id $put_id_of_project_one net_proj_two
+
+Created a new router:
++-----------------------+--------------------------------------+
+| Field                 | Value                                |
++-----------------------+--------------------------------------+
+| admin_state_up        | True                                 |
+| external_gateway_info |                                      |
+| id                    | d73be4ac-d6de-43f7-affa-1e5960bb2443 |
+| name                  | net_proj_two                         |
+| status                | ACTIVE                               |
+| tenant_id             | aece8dea7b664f99b318705faf698e12     |
++-----------------------+--------------------------------------+
+```
+
+* 作ったルーターをサブネットに追加する
+
+```
+put_router_proj_one_id_here=d73be4ac-d6de-43f7-affa-1e5960bb2443
+put_subnet_id_here=51d51d52-cf04-4c20-aff7-ebb0d6c5b852
+quantum router-interface-add $put_router_proj_one_id_here $put_subnet_id_here
+
+Added interface to router d73be4ac-d6de-43f7-affa-1e5960bb2443
+```
+
+* Quantumのサービスをすべて再起動する
+
+```
+cd /etc/init.d/; for i in $( ls quantum-* ); do sudo service $i restart; done
+
+quantum-dhcp-agent stop/waiting
+quantum-dhcp-agent start/running, process 31380
+quantum-l3-agent stop/waiting
+quantum-l3-agent start/running, process 31393
+quantum-metadata-agent stop/waiting
+quantum-metadata-agent start/running, process 31402
+quantum-plugin-linuxbridge-agent stop/waiting
+quantum-plugin-linuxbridge-agent start/running, process 31411
+quantum-server stop/waiting
+quantum-server start/running, process 31420
+```
+
+
+
+
 ## 参考サイト
 
 - [mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide)
@@ -1096,3 +1329,7 @@ tailf /var/log/apache2/error.log
 - [OSSはアルミニウムの翼で飛ぶ: OpenStack/Essex Configuration 05:Nova](http://aikotobaha.blogspot.jp/2012/05/openstackessex-configuration-05nova.html)
 - [6. KeyStone インストール手順 — OpenStack インストール手順のようなもの(Essex版)](http://2done.org/openstack/essex/install/keystone.html)
 - [さくらの専用サーバとOpenStackで作るプライベートクラウド 7ページ | SourceForge.JP Magazine](http://sourceforge.jp/magazine/12/09/18/1126211/7)
+- [OpenStack Installation Guide for Ubuntu 12.04 (LTS) - OpenStack Installation Guide for Ubuntu 12.04 (LTS)  - master](http://docs.openstack.org/trunk/openstack-compute/install/apt/content/)
+- [Install and configure the dashboard - OpenStack Installation Guide for Ubuntu 12.04 (LTS)  - master](http://docs.openstack.org/trunk/openstack-compute/install/apt/content/installing-openstack-dashboard.html)
+- [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
+- [10.3.1. keystoneコマンド — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_com/keystone_com.html)
