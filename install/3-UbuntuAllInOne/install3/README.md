@@ -115,9 +115,11 @@ keystone start/running, process 3580
 * Keystoneデータベース作成。
 
 ```
+cat <<EOF | sh
 mysql -u root -ppassword -e "DROP DATABASE IF EXISTS keystone;"
 mysql -u root -ppassword -e "CREATE DATABASE keystone;"
 mysql -u root -ppassword -e "GRANT ALL ON keystone.* TO 'keystoneUser'@'%' IDENTIFIED BY 'keystonePass';"
+EOF
 ```
 
 * `/etc/keystone/keystone.conf`
@@ -313,9 +315,11 @@ service glance-registry status
 * MySQLデータベースを構築する
 
 ```
+cat <<EOF | sh
 mysql -u root -ppassword -e "DROP DATABASE IF EXISTS glance;"
 mysql -u root -ppassword -e "CREATE DATABASE glance;"
 mysql -u root -ppassword -e "GRANT ALL ON glance.* TO 'glanceUser'@'%' IDENTIFIED BY 'glancePass';"
+EOF
 ```
 
 * 以下は主にglance apiの認証トークンまわりの設定です。
@@ -445,9 +449,11 @@ apt-get install -y quantum-server quantum-plugin-linuxbridge quantum-plugin-linu
 * MySQLデータベースを構築する
 
 ```
+cat <<EOF | sh
 mysql -u root -ppassword -e "DROP DATABASE IF EXISTS quantum;"
 mysql -u root -ppassword -e "CREATE DATABASE quantum;"
 mysql -u root -ppassword -e "GRANT ALL ON quantum.* TO 'quantumUser'@'%' IDENTIFIED BY 'quantumPass';"
+EOF
 ```
 
 * すべてのQuantumコンポーネントが動作していることを確認する
@@ -704,9 +710,11 @@ nova-scheduler start/running, process 16465
 * MySQLのDB用意
 
 ```
+cat <<EOF | sh
 mysql -u root -ppassword -e "DROP DATABASE IF EXISTS nova;"
 mysql -u root -ppassword -e "CREATE DATABASE nova;"
 mysql -u root -ppassword -e "GRANT ALL ON nova.* TO 'novaUser'@'%' IDENTIFIED BY 'novaPass';"
+EOF
 ```
 
 * `/etc/nova/api-paste.ini` の authtokenセクションを編集する
