@@ -4,11 +4,17 @@
 [OpenStack-Grizzly-Install-Guide/OpenStack_Grizzly_Install_Guide.rst at master · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/blob/master/OpenStack_Grizzly_Install_Guide.rst)
 このガイドを参考にする。
 
-* 必須じゃないけどまず初めにこれぐらいインストールしといてもいいかなって思うパッケージ
+## 構成
 
-```
-apt-get -y install vim tmux curl git
-```
+- Ubuntu Server 12.04.3 LTS
+- Software RAID1 2TB
+- LVM: `volume_group00` がセットアップされていること
+- Mem: 16GB
+- NIC:
+  - eth0: `192.168.1.200/24`  
+    外部ネットワーク接続あり。
+  - eth1: `10.10.100.51/24`  
+    マネージメントネットワーク。
 
 ## ノードの準備
 
@@ -20,6 +26,12 @@ apt-get -y install vim tmux curl git
 
 ```
 sudo su -
+```
+
+* 必須じゃないけどまず初めにこれぐらいインストールしといてもいいかなって思うパッケージ
+
+```
+apt-get -y install vim tmux curl git
 ```
 
 * Grizzyのリポジトリを追加する
@@ -422,6 +434,8 @@ glance image-list
 
 ## Quantum
 
+ネットワーク関係のコンポーネント。
+
 * Quantum関係のパッケージをインストール
 
 ```
@@ -431,6 +445,7 @@ apt-get install -y quantum-server quantum-plugin-linuxbridge quantum-plugin-linu
 * MySQLデータベースを構築する
 
 ```
+mysql -u root -ppassword -e "DROP DATABASE IF EXISTS quantum;"
 mysql -u root -ppassword -e "CREATE DATABASE quantum;"
 mysql -u root -ppassword -e "GRANT ALL ON quantum.* TO 'quantumUser'@'%' IDENTIFIED BY 'quantumPass';"
 ```
@@ -605,6 +620,7 @@ service dnsmasq restart
 apt-get -y install cpu-checker
 kvm-ok
 
+INFO: /dev/kvm exists
 KVM acceleration can be used
 ```
 
@@ -658,6 +674,9 @@ env libvirtd_opts="-d -l"
 
 ```
 service libvirt-bin restart
+
+libvirt-bin stop/waiting
+libvirt-bin start/running, process 8003
 ```
 
 ### Nova-*
@@ -685,6 +704,7 @@ nova-scheduler start/running, process 16465
 * MySQLのDB用意
 
 ```
+mysql -u root -ppassword -e "DROP DATABASE IF EXISTS nova;"
 mysql -u root -ppassword -e "CREATE DATABASE nova;"
 mysql -u root -ppassword -e "GRANT ALL ON nova.* TO 'novaUser'@'%' IDENTIFIED BY 'novaPass';"
 ```
@@ -816,6 +836,8 @@ libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
 
 * DB同期
 
+なにせコンポーネントの数が多いので時間かかる。
+
 ```
 nova-manage db sync
 ```
@@ -847,11 +869,11 @@ nova-scheduler start/running, process 16717
 nova-manage service list
 
 Binary           Host                                 Zone             Status     State Updated_At
-nova-cert        stack01                              internal         enabled    :-)   2013-09-21 04:13:23
-nova-consoleauth stack01                              internal         enabled    :-)   2013-09-21 04:13:23
-nova-conductor   stack01                              internal         enabled    :-)   2013-09-21 04:13:23
-nova-scheduler   stack01                              internal         enabled    :-)   2013-09-21 04:13:24
-nova-compute     stack01                              nova             enabled    :-)   2013-09-21 04:13:24
+nova-cert        stack01                              internal         enabled    :-)   2013-09-21 16:18:44
+nova-consoleauth stack01                              internal         enabled    :-)   2013-09-21 16:18:44
+nova-conductor   stack01                              internal         enabled    :-)   2013-09-21 16:18:44
+nova-scheduler   stack01                              internal         enabled    :-)   2013-09-21 16:18:44
+nova-compute     stack01                              nova             enabled    :-)   2013-09-21 16:18:44
 ```
 
 ## Cinder
@@ -883,8 +905,11 @@ sed -i 's/false/true/g' /etc/default/iscsitarget
 * MySQL DB用意
 
 ```
+cat <<EOF | sh
+mysql -u root -ppassword -e "DROP DATABASE IF EXISTS cinder;"
 mysql -u root -ppassword -e "CREATE DATABASE cinder;"
 mysql -u root -ppassword -e "GRANT ALL ON cinder.* TO 'cinderUser'@'%' IDENTIFIED BY 'cinderPass';"
+EOF
 ```
 
 * authtoken設定 `/etc/cinder/api-paste.ini`
@@ -970,6 +995,18 @@ stop: Unknown instance:
 cinder-volume start/running, process 20234
 ```
 
+* 不安なのでもう一回
+
+```
+cd /etc/init.d/; for i in $( ls cinder-* ); do sudo service $i restart; done
+cinder-api stop/waiting
+cinder-api start/running, process 11197
+cinder-scheduler stop/waiting
+cinder-scheduler start/running, process 11208
+cinder-volume stop/waiting
+cinder-volume start/running, process 11219
+```
+
 * サービスがきちんと動作していることを確認する
 
 ```
@@ -983,7 +1020,8 @@ cinder-volume start/running, process 20290
 ## Horizon
 
 長い長い・・・。  
-やっとWeb UIのインストールです。
+Web Dashboardのインストール。  
+Djangoで作られてます。
 
 ```
 apt-get -y install openstack-dashboard memcached
@@ -1008,7 +1046,7 @@ keystone tenant-create --name project_one
 +-------------+----------------------------------+
 | description |                                  |
 |   enabled   |               True               |
-|      id     | 0edd3bab16854ccc9c6d0f02990ee0d0 |
+|      id     | 794ea1083ad546d28711adbf2d04189c |
 |     name    |           project_one            |
 +-------------+----------------------------------+
 ```
@@ -1016,16 +1054,16 @@ keystone tenant-create --name project_one
 * ユーザーの作成
 
 ```
-put_id_of_project_one=0edd3bab16854ccc9c6d0f02990ee0d0
+put_id_of_project_one=794ea1083ad546d28711adbf2d04189c
 keystone user-create --name=user_one --pass=user_one --tenant-id $put_id_of_project_one --email=user_one@domain.com
 +----------+----------------------------------+
 | Property |              Value               |
 +----------+----------------------------------+
 |  email   |       user_one@domain.com        |
 | enabled  |               True               |
-|    id    | 6fb1604169fd457a900f3e758fbc0428 |
+|    id    | 888cfac4b1bc45e29ca1f686be58a4c8 |
 |   name   |             user_one             |
-| tenantId | 0edd3bab16854ccc9c6d0f02990ee0d0 |
+| tenantId | 794ea1083ad546d28711adbf2d04189c |
 +----------+----------------------------------+
 
 
@@ -1033,16 +1071,16 @@ keystone role-list
 +----------------------------------+----------------------+
 |                id                |         name         |
 +----------------------------------+----------------------+
-| e9c22d652a174f33897b05763932d435 |    KeystoneAdmin     |
-| 82d65726132447dabd2c86ffcfe84291 | KeystoneServiceAdmin |
-| 0682b13aba9a4842aa4186642b06c09f |        Member        |
+| f565c4c8bd6b4ca1bff9537646f1c201 |    KeystoneAdmin     |
+| b33b645870524c67a55b58a6d0db0332 | KeystoneServiceAdmin |
+| 5dd4fd57f06f4fbca117dacda1e7e16d |        Member        |
 | 9fe2ff9ee4384b1894a90878d3e92bab |       _member_       |
-| 37c8c3238bfc454b9593b2d7475bbe4e |        admin         |
+| 23a5013976b04d24aa6ea37fa4d548c6 |        admin         |
 +----------------------------------+----------------------+
 
 
-put_id_of_user_one=6fb1604169fd457a900f3e758fbc0428
-put_id_of_member_role=37c8c3238bfc454b9593b2d7475bbe4e
+put_id_of_user_one=888cfac4b1bc45e29ca1f686be58a4c8
+put_id_of_member_role=23a5013976b04d24aa6ea37fa4d548c6
 keystone user-role-add --tenant-id $put_id_of_project_one  --user-id $put_id_of_user_one --role-id $put_id_of_member_role
 ```
 
@@ -1056,7 +1094,7 @@ Created a new network:
 | Field                     | Value                                |
 +---------------------------+--------------------------------------+
 | admin_state_up            | True                                 |
-| id                        | 1ea47f10-3541-472a-b6a2-24c432754d0a |
+| id                        | 034d95a0-3180-4d2f-bad5-96dda0598428 |
 | name                      | net_proj_one                         |
 | provider:network_type     | local                                |
 | provider:physical_network |                                      |
@@ -1065,7 +1103,7 @@ Created a new network:
 | shared                    | False                                |
 | status                    | ACTIVE                               |
 | subnets                   |                                      |
-| tenant_id                 | 0edd3bab16854ccc9c6d0f02990ee0d0     |
+| tenant_id                 | 794ea1083ad546d28711adbf2d04189c     |
 +---------------------------+--------------------------------------+
 ```
 
@@ -1084,11 +1122,11 @@ Created a new subnet:
 | enable_dhcp      | True                                         |
 | gateway_ip       | 50.50.1.1                                    |
 | host_routes      |                                              |
-| id               | 1c46a9f0-a37b-4218-9f04-981972d0150a         |
+| id               | 9b6e8f20-0f76-4c66-b020-61e3f9a2d1ad         |
 | ip_version       | 4                                            |
 | name             |                                              |
-| network_id       | 1ea47f10-3541-472a-b6a2-24c432754d0a         |
-| tenant_id        | 0edd3bab16854ccc9c6d0f02990ee0d0             |
+| network_id       | 034d95a0-3180-4d2f-bad5-96dda0598428         |
+| tenant_id        | 794ea1083ad546d28711adbf2d04189c             |
 +------------------+----------------------------------------------+
 ```
 
@@ -1103,21 +1141,21 @@ Created a new router:
 +-----------------------+--------------------------------------+
 | admin_state_up        | True                                 |
 | external_gateway_info |                                      |
-| id                    | aa849839-7c65-4b45-ac6d-ef5b25af0cb1 |
+| id                    | fdbb44fd-9278-4cfe-a1fb-c7c547e62a1e |
 | name                  | router_proj_one                      |
 | status                | ACTIVE                               |
-| tenant_id             | 0edd3bab16854ccc9c6d0f02990ee0d0     |
+| tenant_id             | 794ea1083ad546d28711adbf2d04189c     |
 +-----------------------+--------------------------------------+
 ```
 
 * 作ったルーターをサブネットに追加する
 
 ```
-put_router_proj_one_id_here=aa849839-7c65-4b45-ac6d-ef5b25af0cb1
-put_subnet_id_here=1c46a9f0-a37b-4218-9f04-981972d0150a
+put_router_proj_one_id_here=fdbb44fd-9278-4cfe-a1fb-c7c547e62a1e
+put_subnet_id_here=9b6e8f20-0f76-4c66-b020-61e3f9a2d1ad
 quantum router-interface-add $put_router_proj_one_id_here $put_subnet_id_here
 
-Added interface to router aa849839-7c65-4b45-ac6d-ef5b25af0cb1
+Added interface to router fdbb44fd-9278-4cfe-a1fb-c7c547e62a1e
 ```
 
 * Quantumのサービスをすべて再起動する
@@ -1126,18 +1164,26 @@ Added interface to router aa849839-7c65-4b45-ac6d-ef5b25af0cb1
 cd /etc/init.d/; for i in $( ls quantum-* ); do sudo service $i restart; done
 
 quantum-dhcp-agent stop/waiting
-quantum-dhcp-agent start/running, process 22033
+quantum-dhcp-agent start/running, process 12629
 quantum-l3-agent stop/waiting
-quantum-l3-agent start/running, process 22046
+quantum-l3-agent start/running, process 12642
 quantum-metadata-agent stop/waiting
-quantum-metadata-agent start/running, process 22055
+quantum-metadata-agent start/running, process 12651
 quantum-plugin-linuxbridge-agent stop/waiting
-quantum-plugin-linuxbridge-agent start/running, process 22064
+quantum-plugin-linuxbridge-agent start/running, process 12660
 quantum-server stop/waiting
-quantum-server start/running, process 22073
+quantum-server start/running, process 12669
 ```
 
 > That's it ! Log on to your dashboard, create your secure key and modify your security groups then create your first VM.
+
+- http://192.168.1.200/horizon
+- ID: `user_one`
+- PASS: `user_one`
+
+* でもエラー
+
+![](img/2013-09-22_01h52_31.png)
 
 ## トラブルシューティング
 
