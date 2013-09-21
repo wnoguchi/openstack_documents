@@ -1143,6 +1143,36 @@ quantum-server start/running, process 22073
 
 > That's it ! Log on to your dashboard, create your secure key and modify your security groups then create your first VM.
 
+## トラブルシューティング
+
+### Glance
+
+```
+glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+
+Error communicating with http://192.168.100.51:9292 [Errno 113] No route to host
+```
+
+`keystone_endpoints_basic.sh` を見たら `EXT_HOST_IP=192.168.100.51` がハードコードされてた。。。  
+ぐぬぬ。。。
+
+```
+EXT_HOST_IP=192.168.100.51
+# ↓
+EXT_HOST_IP=192.168.1.200
+```
+
+として
+
+```
+sh keystone_endpoints_basic.sh
+```
+
+解決。  
+ただ、Keystoneのエンドポイント情報が狂ってるから初めからやり直したほうがいいかも。。。
+
+### Horizon + Keystone + Quantum複合
+
 ```
 エラー: クォータ情報を取得できません。
 ```
@@ -1176,21 +1206,17 @@ tailf /var/log/apache2/error.log
 (snip)
 ```
 
-
-
-
-
-
+```
 apt-get install -y openstack-dashboard libapache2-mod-wsgi
+```
 
+- [Horizon "OfflineGenerationError" · Issue #59 · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/issues/59)
 
-[Horizon "OfflineGenerationError" · Issue #59 · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/issues/59)
-
-
-
+```
 apt-get install memcached libapache2-mod-wsgi openstack-dashboard
+```
 
-[1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
+- [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
 
 keystoneのエンドポイントが間違ってる。。。
 
@@ -1266,10 +1292,6 @@ endpoint直った。
 ```
 service apache2 restart; service memcached restart
 ```
-
-
-
-
 
 * テナントの作成
 
@@ -1407,34 +1429,6 @@ quantum-plugin-linuxbridge-agent start/running, process 31411
 quantum-server stop/waiting
 quantum-server start/running, process 31420
 ```
-
-## トラブルシューティング
-
-### Glance
-
-```
-glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
-
-Error communicating with http://192.168.100.51:9292 [Errno 113] No route to host
-```
-
-`keystone_endpoints_basic.sh` を見たら `EXT_HOST_IP=192.168.100.51` がハードコードされてた。。。  
-ぐぬぬ。。。
-
-```
-EXT_HOST_IP=192.168.100.51
-# ↓
-EXT_HOST_IP=192.168.1.200
-```
-
-として
-
-```
-sh keystone_endpoints_basic.sh
-```
-
-解決。  
-ただ、Keystoneのエンドポイント情報が狂ってるから初めからやり直したほうがいいかも。。。
 
 ## 参考サイト
 
