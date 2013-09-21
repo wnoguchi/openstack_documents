@@ -1516,12 +1516,21 @@ quantum-server start/running, process 31420
 
 ## 参考サイト
 
+### 大元
+
 - [mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide)
 - [OpenStack-Grizzly-Install-Guide/OpenStack_Grizzly_Install_Guide.rst at master · mseknibilel/OpenStack-Grizzly-Install-Guide](https://github.com/mseknibilel/OpenStack-Grizzly-Install-Guide/blob/master/OpenStack_Grizzly_Install_Guide.rst)
+
+### 参考にしたい
+
+- [1. Openstackインストール手順(Grizzly)Ubuntu13.04(パッケージ)編 — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/)
+- [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
+- [10.3.1. keystoneコマンド — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_com/keystone_com.html)
+
+### とりあえず
+
 - [OSSはアルミニウムの翼で飛ぶ: OpenStack/Essex Configuration 05:Nova](http://aikotobaha.blogspot.jp/2012/05/openstackessex-configuration-05nova.html)
 - [6. KeyStone インストール手順 — OpenStack インストール手順のようなもの(Essex版)](http://2done.org/openstack/essex/install/keystone.html)
 - [さくらの専用サーバとOpenStackで作るプライベートクラウド 7ページ | SourceForge.JP Magazine](http://sourceforge.jp/magazine/12/09/18/1126211/7)
 - [OpenStack Installation Guide for Ubuntu 12.04 (LTS) - OpenStack Installation Guide for Ubuntu 12.04 (LTS)  - master](http://docs.openstack.org/trunk/openstack-compute/install/apt/content/)
 - [Install and configure the dashboard - OpenStack Installation Guide for Ubuntu 12.04 (LTS)  - master](http://docs.openstack.org/trunk/openstack-compute/install/apt/content/installing-openstack-dashboard.html)
-- [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
-- [10.3.1. keystoneコマンド — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_com/keystone_com.html)
