@@ -107,10 +107,9 @@ keystone start/running, process 3580
 * Keystoneデータベース作成。
 
 ```
-mysql -u root -ppassword
-CREATE DATABASE keystone;
-GRANT ALL ON keystone.* TO 'keystoneUser'@'%' IDENTIFIED BY 'keystonePass';
-quit;
+mysql -u root -ppassword -e "DROP DATABASE IF EXISTS keystone;"
+mysql -u root -ppassword -e "CREATE DATABASE keystone;"
+mysql -u root -ppassword -e "GRANT ALL ON keystone.* TO 'keystoneUser'@'%' IDENTIFIED BY 'keystonePass';"
 ```
 
 * `/etc/keystone/keystone.conf`
@@ -127,12 +126,120 @@ keystone-manage db_sync
 ```
 
 ```
-git clone https://gist.github.com/b4377e74d3825610780f.git
-cd b4377e74d3825610780f/
+wget https://raw.github.com/wnoguchi/openstack_documents/master/install/3-UbuntuAllInOne/install3/keystone_basic.sh
+wget https://raw.github.com/wnoguchi/openstack_documents/master/install/3-UbuntuAllInOne/install3/keystone_endpoints_basic.sh
 
 #Modify the HOST_IP and HOST_IP_EXT variables before executing the scripts
 sh keystone_basic.sh
 sh keystone_endpoints_basic.sh
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |    OpenStack Compute Service     |
+|      id     | 532de236c852480981b59b2ae6451f6e |
+|     name    |               nova               |
+|     type    |             compute              |
++-------------+----------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |     OpenStack Volume Service     |
+|      id     | 4d5beb4f252a40ba8a5e7c794a5b785b |
+|     name    |              cinder              |
+|     type    |              volume              |
++-------------+----------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |     OpenStack Image Service      |
+|      id     | b57871f4b7014b40a5cc7bd3a7af6002 |
+|     name    |              glance              |
+|     type    |              image               |
++-------------+----------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |        OpenStack Identity        |
+|      id     | f2724f1da3dc4fa2bada9f8d19af84a5 |
+|     name    |             keystone             |
+|     type    |             identity             |
++-------------+----------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |      OpenStack EC2 service       |
+|      id     | c43ad57c7d8a46e487532f27b7b2d8f5 |
+|     name    |               ec2                |
+|     type    |               ec2                |
++-------------+----------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |   OpenStack Networking service   |
+|      id     | 3129b409f4f843eab0c8d22e118f3deb |
+|     name    |             quantum              |
+|     type    |             network              |
++-------------+----------------------------------+
++-------------+--------------------------------------------+
+|   Property  |                   Value                    |
++-------------+--------------------------------------------+
+|   adminurl  | http://10.10.100.51:8774/v2/$(tenant_id)s  |
+|      id     |      e6df8a13d1a94377adffe50c749c5f04      |
+| internalurl | http://10.10.100.51:8774/v2/$(tenant_id)s  |
+|  publicurl  | http://192.168.1.200:8774/v2/$(tenant_id)s |
+|    region   |                 RegionOne                  |
+|  service_id |      532de236c852480981b59b2ae6451f6e      |
++-------------+--------------------------------------------+
++-------------+--------------------------------------------+
+|   Property  |                   Value                    |
++-------------+--------------------------------------------+
+|   adminurl  | http://10.10.100.51:8776/v1/$(tenant_id)s  |
+|      id     |      bd89859b56834307bbaf5d9e0d9275a0      |
+| internalurl | http://10.10.100.51:8776/v1/$(tenant_id)s  |
+|  publicurl  | http://192.168.1.200:8776/v1/$(tenant_id)s |
+|    region   |                 RegionOne                  |
+|  service_id |      4d5beb4f252a40ba8a5e7c794a5b785b      |
++-------------+--------------------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+|   adminurl  |   http://10.10.100.51:9292/v2    |
+|      id     | d5d97f5f28b84ef0a96a7afd32dd488d |
+| internalurl |   http://10.10.100.51:9292/v2    |
+|  publicurl  |   http://192.168.1.200:9292/v2   |
+|    region   |            RegionOne             |
+|  service_id | b57871f4b7014b40a5cc7bd3a7af6002 |
++-------------+----------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+|   adminurl  |  http://10.10.100.51:35357/v2.0  |
+|      id     | 317f6218e6634752b7f7e38e9e786341 |
+| internalurl |  http://10.10.100.51:5000/v2.0   |
+|  publicurl  |  http://192.168.1.200:5000/v2.0  |
+|    region   |            RegionOne             |
+|  service_id | f2724f1da3dc4fa2bada9f8d19af84a5 |
++-------------+----------------------------------+
++-------------+------------------------------------------+
+|   Property  |                  Value                   |
++-------------+------------------------------------------+
+|   adminurl  | http://10.10.100.51:8773/services/Admin  |
+|      id     |     ff84fcb2e14a4572999a98dabdb792e8     |
+| internalurl | http://10.10.100.51:8773/services/Cloud  |
+|  publicurl  | http://192.168.1.200:8773/services/Cloud |
+|    region   |                RegionOne                 |
+|  service_id |     c43ad57c7d8a46e487532f27b7b2d8f5     |
++-------------+------------------------------------------+
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+|   adminurl  |    http://10.10.100.51:9696/     |
+|      id     | 4c0cb954bab34565880afb5af2e86840 |
+| internalurl |    http://10.10.100.51:9696/     |
+|  publicurl  |    http://192.168.1.200:9696/    |
+|    region   |            RegionOne             |
+|  service_id | 3129b409f4f843eab0c8d22e118f3deb |
++-------------+----------------------------------+
 ```
 
 * のちのち読み込むクレデンシャルファイル `creds` を作成する
@@ -154,19 +261,33 @@ source creds
 * Keystoneのテスト
 
 ```
-root@stack01:~/b4377e74d3825610780f# keystone user-list
+root@stack01:/etc# keystone user-list
 +----------------------------------+---------+---------+--------------------+
 |                id                |   name  | enabled |       email        |
 +----------------------------------+---------+---------+--------------------+
-| 652e949b65d144aa9e703017835b4d2c |  admin  |   True  |  admin@domain.com  |
-| ecec2eb6154f4eaeaddf6258c15cd63a |  cinder |   True  | cinder@domain.com  |
-| f30108077fc749c7a92ecbb6e3a92bac |  glance |   True  | glance@domain.com  |
-| ba61c5b2e22f4768801b6255a2db7b30 |   nova  |   True  |  nova@domain.com   |
-| 4590f63aa4574afa9d7e3c70f8abf12f | quantum |   True  | quantum@domain.com |
+| d1f1950b204f45f69114b8ea816b0592 |  admin  |   True  |  admin@domain.com  |
+| 694bfc06e1bf4000a33ae77c0f5f462f |  cinder |   True  | cinder@domain.com  |
+| 2801d212e34f4cc28c498c8df7721786 |  glance |   True  | glance@domain.com  |
+| a0b104f4abe84ac3a79f616749a5d879 |   nova  |   True  |  nova@domain.com   |
+| e42849eb8b984829b0042964be53ee8b | quantum |   True  | quantum@domain.com |
 +----------------------------------+---------+---------+--------------------+
+
+root@stack01:/etc# keystone endpoint-list
++----------------------------------+-----------+--------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+|                id                |   region  |                 publicurl                  |                internalurl                |                  adminurl                 |            service_id            |
++----------------------------------+-----------+--------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
+| 317f6218e6634752b7f7e38e9e786341 | RegionOne |       http://192.168.1.200:5000/v2.0       |       http://10.10.100.51:5000/v2.0       |       http://10.10.100.51:35357/v2.0      | f2724f1da3dc4fa2bada9f8d19af84a5 |
+| 4c0cb954bab34565880afb5af2e86840 | RegionOne |         http://192.168.1.200:9696/         |         http://10.10.100.51:9696/         |         http://10.10.100.51:9696/         | 3129b409f4f843eab0c8d22e118f3deb |
+| bd89859b56834307bbaf5d9e0d9275a0 | RegionOne | http://192.168.1.200:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | http://10.10.100.51:8776/v1/$(tenant_id)s | 4d5beb4f252a40ba8a5e7c794a5b785b |
+| d5d97f5f28b84ef0a96a7afd32dd488d | RegionOne |        http://192.168.1.200:9292/v2        |        http://10.10.100.51:9292/v2        |        http://10.10.100.51:9292/v2        | b57871f4b7014b40a5cc7bd3a7af6002 |
+| e6df8a13d1a94377adffe50c749c5f04 | RegionOne | http://192.168.1.200:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | http://10.10.100.51:8774/v2/$(tenant_id)s | 532de236c852480981b59b2ae6451f6e |
+| ff84fcb2e14a4572999a98dabdb792e8 | RegionOne |  http://192.168.1.200:8773/services/Cloud  |  http://10.10.100.51:8773/services/Cloud  |  http://10.10.100.51:8773/services/Admin  | c43ad57c7d8a46e487532f27b7b2d8f5 |
++----------------------------------+-----------+--------------------------------------------+-------------------------------------------+-------------------------------------------+----------------------------------+
 ```
 
 ## Glance
+
+Image Delivery and Registry Service.
 
 * インストール
 
@@ -184,10 +305,9 @@ service glance-registry status
 * MySQLデータベースを構築する
 
 ```
-mysql -u root -ppassword
-CREATE DATABASE glance;
-GRANT ALL ON glance.* TO 'glanceUser'@'%' IDENTIFIED BY 'glancePass';
-quit;
+mysql -u root -ppassword -e "DROP DATABASE IF EXISTS glance;"
+mysql -u root -ppassword -e "CREATE DATABASE glance;"
+mysql -u root -ppassword -e "GRANT ALL ON glance.* TO 'glanceUser'@'%' IDENTIFIED BY 'glancePass';"
 ```
 
 * 以下は主にglance apiの認証トークンまわりの設定です。
@@ -275,58 +395,33 @@ glance image-create --name myFirstImage --is-public true --container-format bare
 +------------------+--------------------------------------+
 | checksum         | None                                 |
 | container_format | bare                                 |
-| created_at       | 2013-09-21T01:16:13.056555           |
+| created_at       | 2013-09-21T15:07:36.871128           |
 | deleted          | False                                |
 | deleted_at       | None                                 |
 | disk_format      | qcow2                                |
-| id               | 07350478-6eab-4376-8360-b1ceda60ba0f |
+| id               | e47e9378-9e9f-41f2-8d51-94ca37b3b46e |
 | is_public        | True                                 |
 | min_disk         | 0                                    |
 | min_ram          | 0                                    |
 | name             | myFirstImage                         |
 | owner            | None                                 |
 | protected        | False                                |
-| size             | 9761280                              |
+| size             | 0                                    |
 | status           | active                               |
-| updated_at       | 2013-09-21T01:16:13.398988           |
+| updated_at       | 2013-09-21T15:07:37.184114           |
 +------------------+--------------------------------------+
 ```
-
-### トラブルシューティング
-
-```
-glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
-
-Error communicating with http://192.168.100.51:9292 [Errno 113] No route to host
-```
-
-`keystone_endpoints_basic.sh` を見たら `EXT_HOST_IP=192.168.100.51` がハードコードされてた。。。  
-ぐぬぬ。。。
-
-```
-EXT_HOST_IP=192.168.100.51
-# ↓
-EXT_HOST_IP=192.168.1.200
-```
-
-として
-
-```
-sh keystone_endpoints_basic.sh
-```
-
-解決。
 
 * アップされたイメージがリストされていることを確認する
 
 ```
 glance image-list
 
-+--------------------------------------+--------------+-------------+------------------+---------+--------+
-| ID                                   | Name         | Disk Format | Container Format | Size    | Status |
-+--------------------------------------+--------------+-------------+------------------+---------+--------+
-| 07350478-6eab-4376-8360-b1ceda60ba0f | myFirstImage | qcow2       | bare             | 9761280 | active |
-+--------------------------------------+--------------+-------------+------------------+---------+--------+
++--------------------------------------+--------------+-------------+------------------+------+--------+
+| ID                                   | Name         | Disk Format | Container Format | Size | Status |
++--------------------------------------+--------------+-------------+------------------+------+--------+
+| e47e9378-9e9f-41f2-8d51-94ca37b3b46e | myFirstImage | qcow2       | bare             |      | active |
++--------------------------------------+--------------+-------------+------------------+------+--------+
 ```
 
 ## Quantum
@@ -340,10 +435,8 @@ apt-get install -y quantum-server quantum-plugin-linuxbridge quantum-plugin-linu
 * MySQLデータベースを構築する
 
 ```
-mysql -u root -ppassword
-CREATE DATABASE quantum;
-GRANT ALL ON quantum.* TO 'quantumUser'@'%' IDENTIFIED BY 'quantumPass';
-quit;
+mysql -u root -ppassword -e "CREATE DATABASE quantum;"
+mysql -u root -ppassword -e "GRANT ALL ON quantum.* TO 'quantumUser'@'%' IDENTIFIED BY 'quantumPass';"
 ```
 
 * すべてのQuantumコンポーネントが動作していることを確認する
@@ -596,10 +689,8 @@ nova-scheduler start/running, process 16465
 * MySQLのDB用意
 
 ```
-mysql -u root -ppassword
-CREATE DATABASE nova;
-GRANT ALL ON nova.* TO 'novaUser'@'%' IDENTIFIED BY 'novaPass';
-quit;
+mysql -u root -ppassword -e "CREATE DATABASE nova;"
+mysql -u root -ppassword -e "GRANT ALL ON nova.* TO 'novaUser'@'%' IDENTIFIED BY 'novaPass';"
 ```
 
 * `/etc/nova/api-paste.ini` の authtokenセクションを編集する
@@ -796,10 +887,8 @@ sed -i 's/false/true/g' /etc/default/iscsitarget
 * MySQL DB用意
 
 ```
-mysql -u root -ppassword
-CREATE DATABASE cinder;
-GRANT ALL ON cinder.* TO 'cinderUser'@'%' IDENTIFIED BY 'cinderPass';
-quit;
+mysql -u root -ppassword -e "CREATE DATABASE cinder;"
+mysql -u root -ppassword -e "GRANT ALL ON cinder.* TO 'cinderUser'@'%' IDENTIFIED BY 'cinderPass';"
 ```
 
 * authtoken設定 `/etc/cinder/api-paste.ini`
@@ -1319,8 +1408,33 @@ quantum-server stop/waiting
 quantum-server start/running, process 31420
 ```
 
+## トラブルシューティング
 
+### Glance
 
+```
+glance image-create --name myFirstImage --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+
+Error communicating with http://192.168.100.51:9292 [Errno 113] No route to host
+```
+
+`keystone_endpoints_basic.sh` を見たら `EXT_HOST_IP=192.168.100.51` がハードコードされてた。。。  
+ぐぬぬ。。。
+
+```
+EXT_HOST_IP=192.168.100.51
+# ↓
+EXT_HOST_IP=192.168.1.200
+```
+
+として
+
+```
+sh keystone_endpoints_basic.sh
+```
+
+解決。  
+ただ、Keystoneのエンドポイント情報が狂ってるから初めからやり直したほうがいいかも。。。
 
 ## 参考サイト
 
