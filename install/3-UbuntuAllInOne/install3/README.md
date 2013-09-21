@@ -1193,6 +1193,8 @@ quantum-server start/running, process 12669
 
 ![](img/2013-09-22_01h52_31.png)
 
+- [How to boot an ISO instance on Nova? [closed] - Ask OpenStack: Q&A Site for OpenStack Users and Developers](https://ask.openstack.org/en/question/1601/how-to-boot-an-iso-instance-on-nova/)
+
 ## Horizon スクリーンショット
 
 * ログイン画面
