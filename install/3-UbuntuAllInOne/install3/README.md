@@ -1191,9 +1191,70 @@ quantum-server start/running, process 12669
 
 * でもエラー
 
+```
+Booting from hard disk
+Boot failed. not a bootable disk
+Booting from ROM
+DHCP (net0: fa:16:3e:3e: 23:aa:bd)
+No more network drivers
+Booting from floppy
+Boot failed. Could not read from the boot disk.
+No boot table device
+```
+
 ![](img/2013-09-22_01h52_31.png)
 
 - [How to boot an ISO instance on Nova? [closed] - Ask OpenStack: Q&A Site for OpenStack Users and Developers](https://ask.openstack.org/en/question/1601/how-to-boot-an-iso-instance-on-nova/)
+- [Boot failed. Could not read the boot disk - Ask OpenStack: Q&A Site for OpenStack Users and Developers](https://ask.openstack.org/en/question/938/boot-failed-could-not-read-the-boot-disk/)
+
+cirrosのイメージはtrunkから引っ張ってきてるからぶっ壊れているときがあるのかな？
+
+```
+mkdir -p /opt/virt/fedora17 ; cd /opt/virt/fedora17
+curl -O http://berrange.fedorapeople.org/images/2012-11-15/f17-x86_64-openstack-sda.qcow2
+glance image-create --name="f17-jeos" --is-public=true --disk-format=qcow2 --container-format=ovf < /opt/virt/fedora17/f17-x86_64-openstack-sda.qcow2
++------------------+--------------------------------------+
+| Property         | Value                                |
++------------------+--------------------------------------+
+| checksum         | 1f104b5667768964d5df8c4ad1d7cd27     |
+| container_format | ovf                                  |
+| created_at       | 2013-09-22T00:58:04.489700           |
+| deleted          | False                                |
+| deleted_at       | None                                 |
+| disk_format      | qcow2                                |
+| id               | f2eac867-3698-4c81-b860-e3c0f220fd77 |
+| is_public        | True                                 |
+| min_disk         | 0                                    |
+| min_ram          | 0                                    |
+| name             | f17-jeos                             |
+| owner            | None                                 |
+| protected        | False                                |
+| size             | 251985920                            |
+| status           | active                               |
+| updated_at       | 2013-09-22T00:58:05.809611           |
++------------------+--------------------------------------+
+```
+
+よし。  
+とりあえず起動はできた。  
+ログインもできた。  
+おそらくcirrosのqcow2イメージが壊れてたってことだな。
+
+### 今後の課題
+
+- pingが飛ばない（仮想マシンから）。
+- pingが飛ばない（仮想マシンへ、セキュリティグループを設定してもつながらない）。
+- Floating IP当てられない。
+
+おそらくQuantumのネットワーク周りが悪さをしているんだと思う。  
+要勉強。以下が参考になりそう。
+
+- [1.3.1. OpenStackの利用 — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_use.html)
+- [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html#quantum)
+
+参考として、ネットワークトポロジーは以下の様な感じ。
+
+![](img/2013-09-22_10h05_45.png)
 
 ## Horizon スクリーンショット
 
@@ -1526,6 +1587,11 @@ quantum-server start/running, process 31420
 - [1. Openstackインストール手順(Grizzly)Ubuntu13.04(パッケージ)編 — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/)
 - [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html)
 - [10.3.1. keystoneコマンド — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_com/keystone_com.html)
+
+#### Quantum
+
+- [1.3.1. OpenStackの利用 — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_use.html)
+- [1.1.1. OSのインストール — オープンソースに関するドキュメント 1.1 documentation](http://oss.fulltrust.co.jp/doc/openstack_grizzly_ubuntu1304_apt/openstack_control.html#quantum)
 
 ### とりあえず
 
