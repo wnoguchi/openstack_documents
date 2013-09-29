@@ -1541,6 +1541,8 @@ Set gateway for router tenant01-router
 
 ![](img/2013-09-29_22h04_49.png)
 
+うーん、動かない。。。
+
 ## Horizon スクリーンショット
 
 * ログイン画面
