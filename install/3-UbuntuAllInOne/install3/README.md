@@ -1044,6 +1044,8 @@ service apache2 restart; service memcached restart
 
 ## 仮想マシンインスタンスの作成・起動
 
+### OpenStack Grizzly Install Guideにあった手順
+
 * テナントの作成
 
 ```
@@ -1255,6 +1257,102 @@ glance image-create --name="f17-jeos" --is-public=true --disk-format=qcow2 --con
 参考として、ネットワークトポロジーは以下の様な感じ。
 
 ![](img/2013-09-22_10h05_45.png)
+
+### 萩原さんのエントリーを参考に作った例
+
+* クレデンシャル読み込み
+
+```
+source /etc/openstack-working-directory/creds
+```
+
+* テナントの作成
+
+```
+TENANT_NAME=tenant01
+TENANT_ADMIN=admin01
+TENANT_ADMIN_PASS=admin01
+TENANT_USER=user01
+TENANT_USER_PASS=user01
+
+keystone tenant-create --name $TENANT_NAME
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |                                  |
+|   enabled   |               True               |
+|      id     | 0b0a6eaf6c6345bc87e0d36cbbaf4c15 |
+|     name    |             tenant01             |
++-------------+----------------------------------+
+
+keystone user-create --name $TENANT_ADMIN --pass $TENANT_ADMIN_PASS
++----------+----------------------------------+
+| Property |              Value               |
++----------+----------------------------------+
+|  email   |                                  |
+| enabled  |               True               |
+|    id    | 84be2d39d2fa4b0b8e8649b6653cfbc7 |
+|   name   |             admin01              |
+| tenantId |                                  |
++----------+----------------------------------+
+
+keystone user-create --name $TENANT_USER --pass $TENANT_USER_PASS
++----------+----------------------------------+
+| Property |              Value               |
++----------+----------------------------------+
+|  email   |                                  |
+| enabled  |               True               |
+|    id    | a8634078afad41d4999e81f8990a76da |
+|   name   |              user01              |
+| tenantId |                                  |
++----------+----------------------------------+
+```
+
+* ロール追加
+
+```
+keystone user-role-add --user $TENANT_ADMIN --role admin --tenant $TENANT_NAME
+keystone user-role-add --user $TENANT_USER --role Member --tenant $TENANT_NAME
+```
+
+* ちゃんと作成できているか確認
+
+```
+root@stack01:~# keystone tenant-list
++----------------------------------+-------------+---------+
+|                id                |     name    | enabled |
++----------------------------------+-------------+---------+
+| ecea568670fa423f9243cdfa235dcb0e |    admin    |   True  |
+| 794ea1083ad546d28711adbf2d04189c | project_one |   True  |
+| a28d8f1043fa4fc3b430df33a963e921 |   service   |   True  |
+| 0b0a6eaf6c6345bc87e0d36cbbaf4c15 |   tenant01  |   True  |
++----------------------------------+-------------+---------+
+root@stack01:~# keystone user-list
++----------------------------------+----------+---------+---------------------+
+|                id                |   name   | enabled |        email        |
++----------------------------------+----------+---------+---------------------+
+| d1f1950b204f45f69114b8ea816b0592 |  admin   |   True  |   admin@domain.com  |
+| 84be2d39d2fa4b0b8e8649b6653cfbc7 | admin01  |   True  |                     |
+| 694bfc06e1bf4000a33ae77c0f5f462f |  cinder  |   True  |  cinder@domain.com  |
+| 2801d212e34f4cc28c498c8df7721786 |  glance  |   True  |  glance@domain.com  |
+| a0b104f4abe84ac3a79f616749a5d879 |   nova   |   True  |   nova@domain.com   |
+| e42849eb8b984829b0042964be53ee8b | quantum  |   True  |  quantum@domain.com |
+| a8634078afad41d4999e81f8990a76da |  user01  |   True  |                     |
+| 888cfac4b1bc45e29ca1f686be58a4c8 | user_one |   True  | user_one@domain.com |
++----------------------------------+----------+---------+---------------------+
+root@stack01:~# keystone role-list
++----------------------------------+----------------------+
+|                id                |         name         |
++----------------------------------+----------------------+
+| f565c4c8bd6b4ca1bff9537646f1c201 |    KeystoneAdmin     |
+| b33b645870524c67a55b58a6d0db0332 | KeystoneServiceAdmin |
+| 5dd4fd57f06f4fbca117dacda1e7e16d |        Member        |
+| 9fe2ff9ee4384b1894a90878d3e92bab |       _member_       |
+| 23a5013976b04d24aa6ea37fa4d548c6 |        admin         |
++----------------------------------+----------------------+
+```
+
+
 
 ## Horizon スクリーンショット
 
