@@ -1420,7 +1420,126 @@ Created a new subnet:
 
 ![](img/2013-09-29_21h40_44.png)
 
+* テナント用ルーター作成
 
+```
+TENANT_NAME=tenant01
+quantum router-create --tenant-id $tenant ${TENANT_NAME}-router
+
+Created a new router:
++-----------------------+--------------------------------------+
+| Field                 | Value                                |
++-----------------------+--------------------------------------+
+| admin_state_up        | True                                 |
+| external_gateway_info |                                      |
+| id                    | 3babd8b3-f04c-4268-9970-0f57063a38aa |
+| name                  | tenant01-router                      |
+| status                | ACTIVE                               |
+| tenant_id             | 0b0a6eaf6c6345bc87e0d36cbbaf4c15     |
++-----------------------+--------------------------------------+
+```
+
+* L3エージェントのルータとしてテナント用のルータを登録
+
+```
+TENANT_NAME=tenant01
+l3_agent_id=$(quantum agent-list | grep L3 | awk '{print $2}')
+quantum l3-agent-router-add $l3_agent_id ${TENANT_NAME}-router
+
+Added router tenant01-router to L3 agent
+```
+
+* ルータにテナント用として作成したサブネットを紐付け
+
+```
+TENANT_NAME=tenant01
+network_name=$TENANT_NETWORK
+subnet_name=${network_name}-subnet
+quantum router-interface-add ${TENANT_NAME}-router $subnet_name
+
+Added interface to router tenant01-router
+```
+
+![](img/2013-09-29_21h54_34.png)
+
+* 外部接続をするためのネットワークを作成
+
+この手順GitHubのマニュアルには書いてなかった。。。
+
+```
+quantum net-create \
+    --tenant-id $tenant ext-network \
+    --router:external=True
+
+Created a new network:
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | True                                 |
+| id                        | 29ad2a3a-e939-48cd-839f-535829c4d521 |
+| name                      | ext-network                          |
+| provider:network_type     | local                                |
+| provider:physical_network |                                      |
+| provider:segmentation_id  |                                      |
+| router:external           | True                                 |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| tenant_id                 | 0b0a6eaf6c6345bc87e0d36cbbaf4c15     |
++---------------------------+--------------------------------------+
+```
+
+![](img/2013-09-29_21h57_00.png)
+
+* 外部接続ネットワークのサブネットを作成
+
+この辺は外部接続用の既存ネットワークのサブネットと同じ定義になるのかな？
+
+```
+GATEWAY=192.168.1.1
+EXT_NETWORK=192.168.1.0/24
+IP_POOL_START=192.168.1.201
+IP_POOL_END=192.168.1.250
+TENANT_NAME=tenant01
+tenant=$(keystone tenant-list|awk "/$TENANT_NAME/ {print \$2}")
+quantum subnet-create      \
+     --tenant-id $tenant     \
+     --gateway $GATEWAY      \
+     --disable-dhcp          \
+     --allocation-pool start=$IP_POOL_START,end=$IP_POOL_END ext-network $EXT_NETWORK
+
+Created a new subnet:
++------------------+----------------------------------------------------+
+| Field            | Value                                              |
++------------------+----------------------------------------------------+
+| allocation_pools | {"start": "192.168.1.201", "end": "192.168.1.250"} |
+| cidr             | 192.168.1.0/24                                     |
+| dns_nameservers  |                                                    |
+| enable_dhcp      | False                                              |
+| gateway_ip       | 192.168.1.1                                        |
+| host_routes      |                                                    |
+| id               | b548f0bf-b4fb-45c0-929d-1935458abca9               |
+| ip_version       | 4                                                  |
+| name             |                                                    |
+| network_id       | 29ad2a3a-e939-48cd-839f-535829c4d521               |
+| tenant_id        | 0b0a6eaf6c6345bc87e0d36cbbaf4c15                   |
++------------------+----------------------------------------------------+
+```
+
+![](img/2013-09-29_22h02_51.png)
+
+* ルータの外部接続用ゲートウェイに作成した外部ネットワークを紐付け
+
+```
+quantum router-gateway-set ${TENANT_NAME}-router ext-network
+
+Set gateway for router tenant01-router
+```
+
+以下のように繋がった。  
+なんかいけそうな雰囲気を醸し出してる。
+
+![](img/2013-09-29_22h04_49.png)
 
 ## Horizon スクリーンショット
 
