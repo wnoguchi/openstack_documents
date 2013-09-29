@@ -1352,6 +1352,74 @@ root@stack01:~# keystone role-list
 +----------------------------------+----------------------+
 ```
 
+#### ネットワークの作成
+
+* テナント用の内部ネットワークを作成
+
+```
+TENANT_NAME=tenant01
+TENANT_NETWORK=private01
+tenant=$(keystone tenant-list|awk "/$TENANT_NAME/ {print \$2}")
+network_name=$TENANT_NETWORK
+quantum net-create \
+    --tenant-id $tenant $network_name
+
+Created a new network:
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | True                                 |
+| id                        | d7176ed1-dd98-4291-a9e3-d0e187771126 |
+| name                      | private01                            |
+| provider:network_type     | local                                |
+| provider:physical_network |                                      |
+| provider:segmentation_id  |                                      |
+| router:external           | False                                |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| tenant_id                 | 0b0a6eaf6c6345bc87e0d36cbbaf4c15     |
++---------------------------+--------------------------------------+
+```
+
+* 作成したネットワークにサブネットを作成する
+
+```
+TENANT_NAME=tenant01
+TENANT_NAME_SERVER=8.8.8.8
+TENANT_SUBNET=10.10.10.0/24
+network_name=$TENANT_NETWORK
+subnet_name=${network_name}-subnet
+subnet=$TENANT_SUBNET
+nameserver=$TENANT_NAME_SERVER
+quantum subnet-create \
+   --tenant-id $tenant \
+   --name $subnet_name \
+   --dns-nameserver $nameserver $network_name $subnet
+
+Created a new subnet:
++------------------+------------------------------------------------+
+| Field            | Value                                          |
++------------------+------------------------------------------------+
+| allocation_pools | {"start": "10.10.10.2", "end": "10.10.10.254"} |
+| cidr             | 10.10.10.0/24                                  |
+| dns_nameservers  | 8.8.8.8                                        |
+| enable_dhcp      | True                                           |
+| gateway_ip       | 10.10.10.1                                     |
+| host_routes      |                                                |
+| id               | 76c587b0-8a5a-4686-8f15-85d83d505b82           |
+| ip_version       | 4                                              |
+| name             | private01-subnet                               |
+| network_id       | d7176ed1-dd98-4291-a9e3-d0e187771126           |
+| tenant_id        | 0b0a6eaf6c6345bc87e0d36cbbaf4c15               |
++------------------+------------------------------------------------+
+
+```
+
+* 今は以下の様な状態。
+
+![](img/2013-09-29_21h40_44.png)
+
 
 
 ## Horizon スクリーンショット
